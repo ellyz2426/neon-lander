@@ -101,6 +101,8 @@ export class GameManager {
   noCrashStreak = 0;
   totalRotation = 0;
   zenLandings = 0;
+  gravityFlipped = false;
+  padsLandedThisLevel: Set<number> = new Set();
 
   // Callbacks
   onStateChange: ((state: GameState) => void) | null = null;
@@ -139,6 +141,8 @@ export class GameManager {
     this.slowMosUsed = 0;
     this.scoreBoostsUsed = 0;
     this.shieldSavedThisGame = false;
+    this.gravityFlipped = false;
+    this.padsLandedThisLevel = new Set();
     this.powerUps?.resetActive();
 
     this.statsManager.recordGameStart(mode);
@@ -151,8 +155,10 @@ export class GameManager {
     if (mode === GameMode.ENDLESS) this.achievements.unlock('play_endless');
     if (mode === GameMode.ZEN) this.achievements.unlock('play_zen');
 
+    if (mode === GameMode.GRAVITY_FLIP) this.achievements.unlock('play_gravity_flip');
+
     // Check if all modes played
-    if (this.statsManager.stats.modesPlayed.length >= 6) {
+    if (this.statsManager.stats.modesPlayed.length >= 7) {
       this.achievements.unlock('all_modes');
     }
 
@@ -185,6 +191,7 @@ export class GameManager {
     this.lastThrustTime = 0;
     this.invertedTimer = 0;
     this.totalRotation = 0;
+    this.padsLandedThisLevel = new Set();
 
     this.setState(GameState.READY);
     this.onLevelChange?.();
@@ -261,9 +268,10 @@ export class GameManager {
       this.audio.updateThrustPitch(l.fuel, this.currentLevel.fuel);
     }
 
-    // Gravity (modified by slow-mo power-up)
+    // Gravity (modified by slow-mo power-up and gravity flip mode)
     const gravityMult = this.powerUps?.gravityMultiplier ?? 1;
-    l.vy -= GRAVITY * this.currentLevel.gravity * gravityMult * dt;
+    const gravityDir = this.gravityFlipped ? -1 : 1;
+    l.vy -= GRAVITY * this.currentLevel.gravity * gravityMult * gravityDir * dt;
 
     // Wind
     l.vx += this.currentLevel.wind * dt;
@@ -493,6 +501,7 @@ export class GameManager {
     if (this.score >= 10000) this.achievements.unlock('score_10000');
     if (this.score >= 25000) this.achievements.unlock('score_25000');
     if (this.score >= 50000) this.achievements.unlock('score_50000');
+    if (this.score >= 100000) this.achievements.unlock('score_100000');
 
     // Landing count achievements
     const totalLandings = this.statsManager.stats.totalLandings;
@@ -500,9 +509,11 @@ export class GameManager {
     if (totalLandings >= 25) this.achievements.unlock('landings_25');
     if (totalLandings >= 50) this.achievements.unlock('landings_50');
     if (totalLandings >= 100) this.achievements.unlock('landings_100');
+    if (totalLandings >= 250) this.achievements.unlock('total_landings_250');
 
     // Total score achievements
     if (this.statsManager.stats.totalScore >= 100000) this.achievements.unlock('total_score_100k');
+    if (this.statsManager.stats.totalScore >= 500000) this.achievements.unlock('total_score_500k');
 
     // Theme/skin achievements
     if (this.statsManager.stats.themesUsed.length >= 5) this.achievements.unlock('use_all_themes');
@@ -515,10 +526,14 @@ export class GameManager {
 
     // Play time achievements
     if (this.statsManager.stats.totalPlayTimeMs >= 3600000) this.achievements.unlock('play_1_hour');
+    if (this.statsManager.stats.totalPlayTimeMs >= 18000000) this.achievements.unlock('play_5_hours');
 
     // Night owl
     const hour = new Date().getHours();
     if (hour >= 0 && hour < 4) this.achievements.unlock('night_owl');
+    if (hour >= 5 && hour < 7) this.achievements.unlock('early_bird');
+    const day = new Date().getDay();
+    if (day === 0 || day === 6) this.achievements.unlock('weekend_pilot');
 
     // Games played achievements
     if (this.statsManager.stats.gamesPlayed >= 10) this.achievements.unlock('games_played_10');
@@ -532,6 +547,19 @@ export class GameManager {
     this.noCrashStreak++;
     if (this.noCrashStreak >= 5) this.achievements.unlock('no_crash_5');
     if (this.noCrashStreak >= 10) this.achievements.unlock('no_crash_10');
+
+    // Track which pad was landed on
+    const padIdx = this.currentLevel!.pads.findIndex((p) => p.x === padCenterX);
+    if (padIdx >= 0) this.padsLandedThisLevel.add(padIdx);
+    if (this.padsLandedThisLevel.size >= this.currentLevel!.pads.length && this.currentLevel!.pads.length > 1) {
+      this.achievements.unlock('land_all_pads');
+    }
+
+    // Gravity flip mode
+    if (this.mode === GameMode.GRAVITY_FLIP) {
+      this.gravityFlipped = !this.gravityFlipped;
+      this.achievements.unlock('play_gravity_flip');
+    }
 
     // Zen mode landings
     if (this.mode === GameMode.ZEN) {
@@ -647,6 +675,12 @@ export class GameManager {
     if (this.level >= 20) this.achievements.unlock('level_20');
     if (this.level >= 25) this.achievements.unlock('level_25');
 
+    // Gravity flip level achievements
+    if (this.mode === GameMode.GRAVITY_FLIP) {
+      if (this.level >= 5) this.achievements.unlock('flip_5_levels');
+      if (this.level >= 10) this.achievements.unlock('flip_10_levels');
+    }
+
     // Classic completion
     if (this.mode === GameMode.CLASSIC && this.level > 10) {
       this.achievements.unlock('complete_classic');
@@ -655,6 +689,7 @@ export class GameManager {
       if (this.difficulty === Difficulty.NORMAL) this.achievements.unlock('normal_win');
       if (this.difficulty === Difficulty.HARD) this.achievements.unlock('hard_win');
       if (this.noCrashStreak >= 10) this.achievements.unlock('no_crash_classic');
+      if (this.totalGameTime < 300) this.achievements.unlock('speed_run_classic');
       this.endGame();
       return;
     }

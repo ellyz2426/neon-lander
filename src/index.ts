@@ -22,6 +22,7 @@ import { PowerUpManager } from './powerups';
 import { buildTerrainMesh, buildStarField, generateLevel } from './terrain';
 import { buildLanderMesh, updateLanderSkin } from './lander';
 import { buildNebulaEffect } from './nebula';
+import { buildApproachGuide, buildLandingBeam, buildTerrainGlowEdge, buildBackgroundGrid } from './vfx';
 import {
   FIELD_OFFSET_Y,
   GameState,
@@ -81,9 +82,14 @@ async function main(): Promise<void> {
   const nebulaGroup = buildNebulaEffect(game.theme);
   fieldGroup.add(nebulaGroup);
 
+  // Background grid
+  const gridGroup = buildBackgroundGrid(game.theme);
+  fieldGroup.add(gridGroup);
+
   // Build initial terrain (will be rebuilt on level change)
   let currentTerrainGroup: Group | null = null;
   let currentPadMeshes: any[] = [];
+  let currentGuidesGroup: Group | null = null;
 
   // Star field
   let starField = buildStarField(game.theme);
@@ -102,12 +108,28 @@ async function main(): Promise<void> {
     if (currentTerrainGroup) {
       fieldGroup.remove(currentTerrainGroup);
     }
+    if (currentGuidesGroup) {
+      fieldGroup.remove(currentGuidesGroup);
+    }
 
     if (!game.currentLevel) return;
     const { terrainGroup, padMeshes } = buildTerrainMesh(game.currentLevel, game.theme);
     currentTerrainGroup = terrainGroup;
     currentPadMeshes = padMeshes;
     fieldGroup.add(terrainGroup);
+
+    // Add approach guides and landing beams
+    currentGuidesGroup = new Group();
+    for (const pad of game.currentLevel.pads) {
+      const guide = buildApproachGuide(pad.x, pad.y, pad.width, game.theme);
+      currentGuidesGroup.add(guide);
+      const beam = buildLandingBeam(pad.x, pad.y, game.theme);
+      currentGuidesGroup.add(beam);
+    }
+    // Terrain glow edge
+    const glowEdge = buildTerrainGlowEdge(game.currentLevel.terrain, game.theme);
+    currentGuidesGroup.add(glowEdge);
+    fieldGroup.add(currentGuidesGroup);
   }
 
   game.onLevelChange = () => {

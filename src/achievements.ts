@@ -108,6 +108,22 @@ const ACHIEVEMENT_DEFS: { id: string; title: string; description: string; catego
   // Hidden / secret
   { id: 'zen_100_lands', title: 'Inner Master', description: 'Land 100 times in Zen mode', category: 'Hidden' },
   { id: 'score_single_2000', title: 'Jackpot', description: 'Score 2000+ on a single landing', category: 'Hidden' },
+  // Gravity Flip
+  { id: 'play_gravity_flip', title: 'Upside Down', description: 'Land in Gravity Flip mode', category: 'Modes' },
+  { id: 'flip_5_levels', title: 'Flip Master', description: 'Complete 5 flipped levels', category: 'Modes' },
+  { id: 'flip_10_levels', title: 'Gravity Bender', description: 'Complete 10 flipped levels', category: 'Modes' },
+  // Multi-pad
+  { id: 'land_all_pads', title: 'Pad Collector', description: 'Land on every pad in a level', category: 'Challenge' },
+  { id: 'land_3_pads_game', title: 'Multi-Pad Master', description: 'Land on 3 different pads in one game', category: 'Challenge' },
+  // Score milestones
+  { id: 'score_100000', title: 'Legendary Score', description: 'Score 100,000 points in one game', category: 'Score' },
+  { id: 'total_score_500k', title: 'Half Million', description: 'Accumulate 500,000 total score', category: 'Career' },
+  { id: 'total_landings_250', title: 'Quarter Thousand', description: 'Complete 250 total landings', category: 'Career' },
+  // Misc new
+  { id: 'play_5_hours', title: 'Space Veteran', description: 'Play for 5 hours total', category: 'Misc' },
+  { id: 'weekend_pilot', title: 'Weekend Pilot', description: 'Play on a Saturday or Sunday', category: 'Misc' },
+  { id: 'early_bird', title: 'Early Bird', description: 'Play between 5 AM and 7 AM', category: 'Misc' },
+  { id: 'speed_run_classic', title: 'Speed Runner', description: 'Complete Classic in under 5 minutes', category: 'Speed' },
 ];
 
 const STORAGE_KEY = 'neon-lander-achievements';

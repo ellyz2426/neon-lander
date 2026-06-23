@@ -57,6 +57,7 @@ export enum GameMode {
   ENDLESS = 'endless',
   ZEN = 'zen',
   DAILY = 'daily',
+  GRAVITY_FLIP = 'gravity_flip',
 }
 
 export enum Difficulty {
@@ -172,6 +173,14 @@ export const MODE_CONFIGS: Record<GameMode, {
     infiniteFuel: false,
     timedMode: true,
     precisionMode: true,
+  },
+  [GameMode.GRAVITY_FLIP]: {
+    label: 'Gravity Flip',
+    description: 'Gravity reverses each landing',
+    hasLevels: true,
+    infiniteFuel: false,
+    timedMode: false,
+    precisionMode: false,
   },
 };
 
