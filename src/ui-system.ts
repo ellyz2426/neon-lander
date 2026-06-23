@@ -421,6 +421,11 @@ export class UISystem extends createSystem({
       el?.setProperties({ text });
     };
 
+    const setColor = (id: string, color: string) => {
+      const el = this.hudDoc!.getElementById(id) as UIKit.Text | undefined;
+      el?.setProperties({ color });
+    };
+
     setText('fuel-value', `${fuelPct}%`);
     setText('alt-value', `${Math.max(0, l.y - game.getTerrainHeight(l.x)).toFixed(1)}`);
     setText('vx-value', `${Math.abs(l.vx).toFixed(1)}`);
@@ -431,10 +436,51 @@ export class UISystem extends createSystem({
     setText('wind-value', `${game.currentLevel ? game.currentLevel.wind.toFixed(1) : '0.0'}`);
     setText('angle-value', `${Math.round((l.angle * 180) / Math.PI)}`);
 
+    // Fuel bar width + color
     const fuelBar = this.hudDoc.getElementById('fuel-bar') as UIKit.Text | undefined;
     if (fuelBar) {
-      const w = Math.max(5, fuelPct * 1.5);
-      fuelBar.setProperties({ width: w });
+      const w = Math.max(5, fuelPct * 0.7);
+      const fuelColor = fuelPct > 50 ? '#00ff88' : fuelPct > 20 ? '#ffcc44' : '#ff4444';
+      fuelBar.setProperties({ width: w, backgroundColor: fuelColor });
+    }
+    // Fuel text color
+    const fuelTextColor = fuelPct > 50 ? '#00ff88' : fuelPct > 20 ? '#ffcc44' : '#ff4444';
+    setColor('fuel-value', fuelTextColor);
+
+    // Velocity danger colors — green/yellow/red based on safe thresholds
+    const vyAbs = Math.abs(l.vy);
+    const vxAbs = Math.abs(l.vx);
+    const vyColor = vyAbs < 0.8 ? '#44ff44' : vyAbs < 1.2 ? '#ffcc44' : '#ff4444';
+    const vxColor = vxAbs < 0.4 ? '#44ff44' : vxAbs < 0.6 ? '#ffcc44' : '#ff4444';
+    setColor('vy-value', vyColor);
+    setColor('vx-value', vxColor);
+
+    // Angle danger color
+    const angleAbs = Math.abs(l.angle);
+    const angleColor = angleAbs < 0.15 ? '#44ff44' : angleAbs < 0.25 ? '#ffcc44' : '#ff4444';
+    setColor('angle-value', angleColor);
+
+    // Status indicator
+    const isSafe = vyAbs < 0.8 && vxAbs < 0.4 && angleAbs < 0.15;
+    const isCaution = vyAbs < 1.2 && vxAbs < 0.6 && angleAbs < 0.25;
+    if (isSafe) {
+      setText('status-indicator', '● SAFE');
+      setColor('status-indicator', '#44ff44');
+    } else if (isCaution) {
+      setText('status-indicator', '● CAUTION');
+      setColor('status-indicator', '#ffcc44');
+    } else {
+      setText('status-indicator', '● DANGER');
+      setColor('status-indicator', '#ff4444');
+    }
+
+    // Ready countdown
+    if (game.state === GameState.READY) {
+      const countVal = Math.ceil(game.readyTimer);
+      setText('countdown-text', countVal > 0 ? `${countVal}` : 'GO!');
+      setColor('countdown-text', '#44ffaa');
+    } else {
+      setText('countdown-text', '');
     }
   }
 

@@ -315,6 +315,9 @@ export class GameManager {
     this.audio.stopThrust();
     this.audio.playLand();
 
+    // Landing dust particles
+    this.particles?.emitLandingDust(l.x, l.y);
+
     const modeConfig = MODE_CONFIGS[this.mode];
     const landingTime = this.levelElapsedTime;
 

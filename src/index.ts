@@ -9,6 +9,9 @@ import {
   AmbientLight,
   PointLight,
   Group,
+  Mesh,
+  MeshStandardMaterial,
+  ConeGeometry,
 } from '@iwsdk/core';
 import { GameManager } from './game';
 import { GameSystem } from './game-system';
@@ -102,6 +105,20 @@ async function main(): Promise<void> {
     landerGroup.visible = true;
   };
 
+  // Wind indicator arrow
+  const windGeo = new ConeGeometry(0.04, 0.15, 4);
+  windGeo.rotateZ(-Math.PI / 2); // point right by default
+  const windMat = new MeshStandardMaterial({
+    color: 0xffcc44,
+    emissive: 0xffaa00,
+    emissiveIntensity: 0.6,
+    transparent: true,
+    opacity: 0.7,
+  });
+  const windIndicator = new Mesh(windGeo, windMat);
+  windIndicator.visible = false;
+  fieldGroup.add(windIndicator);
+
   // ---- PanelUI setup ----
   const panelZ = -2;
   const panelY = 4;
@@ -187,7 +204,14 @@ async function main(): Promise<void> {
   world.registerSystem(ParticleSystem);
 
   const gameSystem = world.getSystem(GameSystem)!;
-  gameSystem.setRefs({ game, particles });
+  gameSystem.setRefs({ game, particles, camera: world.camera, padMeshes: currentPadMeshes, windIndicator });
+
+  // Keep padMeshes ref in sync after terrain rebuilds
+  const origOnLevelChange = game.onLevelChange;
+  game.onLevelChange = () => {
+    origOnLevelChange?.();
+    gameSystem.setRefs({ game, particles, camera: world.camera, padMeshes: currentPadMeshes, windIndicator });
+  };
 
   const particleSystem = world.getSystem(ParticleSystem)!;
   particleSystem.setRefs({ particles, game });
@@ -237,20 +261,6 @@ async function main(): Promise<void> {
     game.audio.playAchievement();
     uiSystem.showToast(a);
   };
-
-  // Pad glow animation
-  let padGlowPhase = 0;
-  function animatePads(): void {
-    padGlowPhase += 0.02;
-    for (const padMesh of currentPadMeshes) {
-      const mat = padMesh.material as any;
-      if (mat && mat.emissiveIntensity !== undefined) {
-        mat.emissiveIntensity = 0.4 + Math.sin(padGlowPhase * 3) * 0.3;
-      }
-    }
-    requestAnimationFrame(animatePads);
-  }
-  requestAnimationFrame(animatePads);
 }
 
 main().catch(console.error);

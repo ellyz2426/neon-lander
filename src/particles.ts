@@ -102,6 +102,23 @@ export class ParticleManager {
     }
   }
 
+  emitLandingDust(x: number, y: number, color: number = 0xaabb88): void {
+    for (let i = 0; i < 12; i++) {
+      const angle = -Math.PI * 0.1 + Math.random() * Math.PI * 1.2 - Math.PI * 0.5;
+      const spd = 0.3 + Math.random() * 0.8;
+      const mesh = this.getOrCreate(color);
+      mesh.position.set(x + (Math.random() - 0.5) * 0.2, y, 0);
+
+      this.particles.push({
+        mesh,
+        vx: Math.cos(angle) * spd,
+        vy: Math.abs(Math.sin(angle)) * spd * 0.5,
+        life: 0.3 + Math.random() * 0.4,
+        maxLife: 0.5,
+      });
+    }
+  }
+
   update(dt: number): void {
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const p = this.particles[i];
