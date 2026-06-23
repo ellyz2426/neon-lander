@@ -1,4 +1,4 @@
-<panel width="420" height="140" backgroundColor="#00112240" borderRadius="8" flexDirection="column" padding="6" gap="4">
+<panel width="420" height="160" backgroundColor="#00112240" borderRadius="8" flexDirection="column" padding="6" gap="4">
   <panel flexDirection="row" justifyContent="space-between" gap="4">
     <panel flexDirection="column" gap="2" width="80">
       <text fontSize="9" color="#44aaff" fontWeight="bold">FUEL</text>
@@ -45,5 +45,9 @@
         <text id="lives-value" fontSize="14" color="#ff4466" fontWeight="bold">3</text>
       </panel>
     </panel>
+  </panel>
+  <panel flexDirection="row" justifyContent="space-between" alignItems="center" paddingLeft="4" paddingRight="4">
+    <text id="powerup-status" fontSize="9" color="#cc44ff" fontWeight="bold"></text>
+    <text id="combo-text" fontSize="10" color="#ffcc00" fontWeight="bold"></text>
   </panel>
 </panel>

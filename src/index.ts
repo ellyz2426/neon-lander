@@ -18,8 +18,10 @@ import { GameSystem } from './game-system';
 import { UISystem } from './ui-system';
 import { ParticleSystem } from './particle-system';
 import { ParticleManager } from './particles';
+import { PowerUpManager } from './powerups';
 import { buildTerrainMesh, buildStarField, generateLevel } from './terrain';
 import { buildLanderMesh, updateLanderSkin } from './lander';
+import { buildNebulaEffect } from './nebula';
 import {
   FIELD_OFFSET_Y,
   GameState,
@@ -43,7 +45,7 @@ async function main(): Promise<void> {
     },
   });
 
-  // Camera position — looking at play field
+  // Camera position - looking at play field
   world.camera.position.set(0, 4.5, 8);
   world.camera.lookAt(0, 3, 0);
 
@@ -59,7 +61,7 @@ async function main(): Promise<void> {
   mainLight.position.set(0, 10, 5);
   world.scene.add(mainLight);
 
-  // Play field group — holds everything in the game world
+  // Play field group - holds everything in the game world
   const fieldGroup = new Group();
   fieldGroup.position.set(0, FIELD_OFFSET_Y, 0);
   world.scene.add(fieldGroup);
@@ -70,6 +72,14 @@ async function main(): Promise<void> {
   // Particles
   const particles = new ParticleManager(fieldGroup);
   game.particles = particles;
+
+  // Power-ups
+  const powerUps = new PowerUpManager(fieldGroup);
+  game.powerUps = powerUps;
+
+  // Nebula background effect
+  const nebulaGroup = buildNebulaEffect(game.theme);
+  fieldGroup.add(nebulaGroup);
 
   // Build initial terrain (will be rebuilt on level change)
   let currentTerrainGroup: Group | null = null;
@@ -246,6 +256,12 @@ async function main(): Promise<void> {
     fieldGroup.remove(starField);
     starField = buildStarField(theme);
     fieldGroup.add(starField);
+
+    // Rebuild nebula
+    fieldGroup.remove(nebulaGroup);
+    const newNebula = buildNebulaEffect(theme);
+    fieldGroup.add(newNebula);
+    Object.assign(nebulaGroup, newNebula); // Keep reference for GC
 
     game.statsManager.recordTheme(theme);
   };

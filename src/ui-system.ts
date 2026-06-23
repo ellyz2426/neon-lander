@@ -447,7 +447,7 @@ export class UISystem extends createSystem({
     const fuelTextColor = fuelPct > 50 ? '#00ff88' : fuelPct > 20 ? '#ffcc44' : '#ff4444';
     setColor('fuel-value', fuelTextColor);
 
-    // Velocity danger colors — green/yellow/red based on safe thresholds
+    // Velocity danger colors - green/yellow/red based on safe thresholds
     const vyAbs = Math.abs(l.vy);
     const vxAbs = Math.abs(l.vx);
     const vyColor = vyAbs < 0.8 ? '#44ff44' : vyAbs < 1.2 ? '#ffcc44' : '#ff4444';
@@ -464,14 +464,29 @@ export class UISystem extends createSystem({
     const isSafe = vyAbs < 0.8 && vxAbs < 0.4 && angleAbs < 0.15;
     const isCaution = vyAbs < 1.2 && vxAbs < 0.6 && angleAbs < 0.25;
     if (isSafe) {
-      setText('status-indicator', '● SAFE');
+      setText('status-indicator', '>> SAFE');
       setColor('status-indicator', '#44ff44');
     } else if (isCaution) {
-      setText('status-indicator', '● CAUTION');
+      setText('status-indicator', '>> CAUTION');
       setColor('status-indicator', '#ffcc44');
     } else {
-      setText('status-indicator', '● DANGER');
+      setText('status-indicator', '>> DANGER');
       setColor('status-indicator', '#ff4444');
+    }
+
+    // Power-up status
+    const puLabel = game.powerUps?.getActiveLabel() ?? '';
+    setText('powerup-status', puLabel);
+
+    // Combo display
+    if (game.perfectCombo >= 2) {
+      setText('combo-text', `${game.perfectCombo}x COMBO`);
+      setColor('combo-text', '#ffcc00');
+    } else if (game.noCrashStreak >= 3) {
+      setText('combo-text', `${game.noCrashStreak} STREAK`);
+      setColor('combo-text', '#44ffaa');
+    } else {
+      setText('combo-text', '');
     }
 
     // Ready countdown

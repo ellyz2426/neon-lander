@@ -119,6 +119,49 @@ export class ParticleManager {
     }
   }
 
+  emitTrail(x: number, y: number, vx: number, vy: number, color: number): void {
+    // Short-lived trail dot behind lander
+    const mesh = this.getOrCreate(color);
+    mesh.position.set(x, y, 0);
+    this.particles.push({
+      mesh,
+      vx: -vx * 0.1 + (Math.random() - 0.5) * 0.2,
+      vy: -vy * 0.1 + (Math.random() - 0.5) * 0.2,
+      life: 0.15 + Math.random() * 0.1,
+      maxLife: 0.2,
+    });
+  }
+
+  emitWindParticle(fieldWidth: number, windDirection: number, y: number, color: number): void {
+    // Ambient wind particle drifting horizontally
+    const startX = windDirection > 0 ? -fieldWidth / 2 - 0.5 : fieldWidth / 2 + 0.5;
+    const mesh = this.getOrCreate(color);
+    mesh.position.set(startX, y, -0.1 - Math.random() * 0.3);
+    mesh.scale.set(0.5, 0.5, 0.5);
+    this.particles.push({
+      mesh,
+      vx: windDirection * (0.5 + Math.random() * 0.5),
+      vy: (Math.random() - 0.5) * 0.1,
+      life: 3 + Math.random() * 2,
+      maxLife: 4,
+    });
+  }
+
+  emitShieldShimmer(x: number, y: number): void {
+    // Sparkle around lander when shield is active
+    const angle = Math.random() * Math.PI * 2;
+    const r = 0.2 + Math.random() * 0.1;
+    const mesh = this.getOrCreate(0x44aaff);
+    mesh.position.set(x + Math.cos(angle) * r, y + Math.sin(angle) * r, 0);
+    this.particles.push({
+      mesh,
+      vx: Math.cos(angle) * 0.3,
+      vy: Math.sin(angle) * 0.3,
+      life: 0.2 + Math.random() * 0.15,
+      maxLife: 0.3,
+    });
+  }
+
   update(dt: number): void {
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const p = this.particles[i];

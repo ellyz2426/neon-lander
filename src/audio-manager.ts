@@ -230,4 +230,79 @@ export class AudioManager {
     gain.connect(this.masterGain!);
     source.start();
   }
+
+  playPowerUp(): void {
+    const ctx = this.ensureCtx();
+    // Rising sparkle arpeggio
+    const notes = [880, 1100, 1320, 1760];
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.06);
+      gain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + i * 0.06 + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.06 + 0.2);
+      osc.connect(gain);
+      gain.connect(this.masterGain!);
+      osc.start(ctx.currentTime + i * 0.06);
+      osc.stop(ctx.currentTime + i * 0.06 + 0.2);
+    });
+  }
+
+  playShieldBreak(): void {
+    const ctx = this.ensureCtx();
+    // Electric shield break sound
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(1200, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.3);
+    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    osc.connect(gain);
+    gain.connect(this.masterGain!);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.4);
+
+    // Shimmer
+    const osc2 = ctx.createOscillator();
+    const gain2 = ctx.createGain();
+    osc2.type = 'sine';
+    osc2.frequency.value = 2000;
+    gain2.gain.setValueAtTime(0.08, ctx.currentTime);
+    gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+    osc2.connect(gain2);
+    gain2.connect(this.masterGain!);
+    osc2.start();
+    osc2.stop(ctx.currentTime + 0.3);
+  }
+
+  private proximityOsc: OscillatorNode | null = null;
+  private proximityGain: GainNode | null = null;
+  private lastProxBeepTime = 0;
+
+  playProximityBeep(altitude: number): void {
+    // Beep frequency increases as altitude decreases
+    if (altitude > 3 || altitude < 0) return;
+
+    const now = performance.now();
+    const interval = 200 + altitude * 300; // faster beeps when closer
+    if (now - this.lastProxBeepTime < interval) return;
+    this.lastProxBeepTime = now;
+
+    const ctx = this.ensureCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    const freq = 800 + (3 - altitude) * 400; // higher pitch when closer
+    osc.frequency.value = freq;
+    const vol = Math.min(0.1, 0.03 + (3 - altitude) * 0.025);
+    gain.gain.setValueAtTime(vol, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+    osc.connect(gain);
+    gain.connect(this.masterGain!);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.08);
+  }
 }

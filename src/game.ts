@@ -35,6 +35,7 @@ import { AchievementManager } from './achievements';
 import { StatsManager } from './stats-manager';
 import { LeaderboardManager } from './leaderboard';
 import { ParticleManager } from './particles';
+import { PowerUpManager, PowerUpType, POWERUP_DEFS } from './powerups';
 
 export class GameManager {
   // State
@@ -79,6 +80,15 @@ export class GameManager {
   statsManager = new StatsManager();
   leaderboard = new LeaderboardManager();
   particles: ParticleManager | null = null;
+  powerUps: PowerUpManager | null = null;
+
+  // Power-up tracking
+  totalPowerUpsCollected = 0;
+  fuelPickups = 0;
+  shieldsUsed = 0;
+  slowMosUsed = 0;
+  scoreBoostsUsed = 0;
+  shieldSavedThisGame = false;
 
   // Timers
   readyTimer = 0;
@@ -88,6 +98,9 @@ export class GameManager {
   lastThrustTime = 0;
   invertedTimer = 0;
   perfectCombo = 0;
+  noCrashStreak = 0;
+  totalRotation = 0;
+  zenLandings = 0;
 
   // Callbacks
   onStateChange: ((state: GameState) => void) | null = null;
@@ -120,6 +133,13 @@ export class GameManager {
     this.perfectCombo = 0;
     this.totalGameTime = 0;
     this.retryCountThisLevel = 0;
+    this.totalPowerUpsCollected = 0;
+    this.fuelPickups = 0;
+    this.shieldsUsed = 0;
+    this.slowMosUsed = 0;
+    this.scoreBoostsUsed = 0;
+    this.shieldSavedThisGame = false;
+    this.powerUps?.resetActive();
 
     this.statsManager.recordGameStart(mode);
     this.statsManager.recordTheme(this.theme);
@@ -164,9 +184,19 @@ export class GameManager {
     this.readyTimer = 2.0;
     this.lastThrustTime = 0;
     this.invertedTimer = 0;
+    this.totalRotation = 0;
 
     this.setState(GameState.READY);
     this.onLevelChange?.();
+
+    // Spawn power-ups for this level
+    if (this.powerUps && this.currentLevel) {
+      const level = this.currentLevel;
+      this.powerUps.spawnForLevel(
+        level.pads,
+        (x: number) => this.getTerrainHeight(x),
+      );
+    }
   }
 
   private getDailySeed(): number {
@@ -191,6 +221,12 @@ export class GameManager {
     if (this.rotateRightInput) l.angularVel += ROTATION_SPEED * dt;
     l.angularVel *= DRAG;
     l.angle += l.angularVel * dt;
+
+    // Track total rotation for 360 achievement
+    this.totalRotation += Math.abs(l.angularVel * dt);
+    if (this.totalRotation >= Math.PI * 2) {
+      this.achievements.unlock('full_360');
+    }
 
     // Normalize angle
     while (l.angle > Math.PI) l.angle -= Math.PI * 2;
@@ -225,11 +261,23 @@ export class GameManager {
       this.audio.updateThrustPitch(l.fuel, this.currentLevel.fuel);
     }
 
-    // Gravity
-    l.vy -= GRAVITY * this.currentLevel.gravity * dt;
+    // Gravity (modified by slow-mo power-up)
+    const gravityMult = this.powerUps?.gravityMultiplier ?? 1;
+    l.vy -= GRAVITY * this.currentLevel.gravity * gravityMult * dt;
 
     // Wind
     l.vx += this.currentLevel.wind * dt;
+
+    // Update power-up timers
+    this.powerUps?.updateTimers(dt);
+
+    // Check power-up collection
+    if (this.powerUps) {
+      const collected = this.powerUps.checkCollection(l.x, l.y);
+      if (collected) {
+        this.handlePowerUpCollect(collected);
+      }
+    }
 
     // Clamp velocity
     const speed = Math.sqrt(l.vx * l.vx + l.vy * l.vy);
@@ -305,6 +353,48 @@ export class GameManager {
     return pts[pts.length - 1].y;
   }
 
+  private handlePowerUpCollect(type: PowerUpType): void {
+    const def = POWERUP_DEFS[type];
+    this.audio.playPowerUp();
+    this.totalPowerUpsCollected++;
+    this.particles?.emit(this.lander.x, this.lander.y, 15, def.color, 1.5, 0.4);
+
+    switch (type) {
+      case PowerUpType.FUEL:
+        this.fuelPickups++;
+        break;
+      case PowerUpType.SHIELD:
+        this.shieldsUsed++;
+        break;
+      case PowerUpType.SLOW_MO:
+        this.slowMosUsed++;
+        break;
+      case PowerUpType.SCORE_BOOST:
+        this.scoreBoostsUsed++;
+        break;
+    }
+
+    this.powerUps!.applyPowerUp(type, {
+      current: this.lander.fuel,
+      max: this.currentLevel?.fuel ?? 100,
+    });
+
+    // For fuel, apply directly
+    if (type === PowerUpType.FUEL) {
+      this.lander.fuel = Math.min(
+        this.currentLevel?.fuel ?? 100,
+        this.lander.fuel + (this.currentLevel?.fuel ?? 100) * 0.25,
+      );
+    }
+
+    // Power-up achievements
+    if (this.totalPowerUpsCollected >= 1) this.achievements.unlock('first_powerup');
+    if (this.totalPowerUpsCollected >= 10) this.achievements.unlock('powerup_10');
+    if (this.totalPowerUpsCollected >= 25) this.achievements.unlock('powerup_25');
+    if (this.fuelPickups >= 5) this.achievements.unlock('fuel_hoarder');
+    if (this.scoreBoostsUsed >= 3) this.achievements.unlock('boost_collector');
+  }
+
   private handleLanding(multiplier: number, padCenterX: number): void {
     const l = this.lander;
     l.alive = false;
@@ -344,6 +434,11 @@ export class GameManager {
       landScore += Math.max(0, Math.floor((30 - landingTime) * 10));
     }
 
+    // Apply power-up score multiplier
+    const puMult = this.powerUps?.consumeScoreMultiplier() ?? 1;
+    landScore = Math.floor(landScore * puMult);
+    if (puMult > 1) this.achievements.unlock('boosted_landing');
+
     this.score += landScore;
     this.onScoreChange?.(this.score);
 
@@ -368,13 +463,29 @@ export class GameManager {
     this.achievements.unlock('first_landing');
     if (touchdownSpeed < 0.3) this.achievements.unlock('perfect_landing');
     if (landingTime < 10) this.achievements.unlock('fast_landing');
+    if (landingTime < 5) this.achievements.unlock('land_under_5s');
+    if (landingTime < 3) this.achievements.unlock('land_under_3s');
     if (landingTime > 60) this.achievements.unlock('slow_landing');
     if (fuelPercent > 0.8) this.achievements.unlock('fuel_saver');
     if (fuelPercent < 0.05 && !modeConfig.infiniteFuel) this.achievements.unlock('fumes_landing');
+    if (fuelPercent < 0.01 && !modeConfig.infiniteFuel) this.achievements.unlock('land_min_fuel');
+    if (fuelPercent > 0.9) this.achievements.unlock('min_fuel_used');
     if (multiplier >= 3) this.achievements.unlock('narrow_pad');
     if (this.levelElapsedTime - this.lastThrustTime > 2) this.achievements.unlock('no_thrust_land');
     if (this.currentLevel && Math.abs(this.currentLevel.wind) > 0.5) this.achievements.unlock('land_in_wind');
     if (this.currentLevel && Math.abs(this.currentLevel.wind) > 1.0) this.achievements.unlock('land_strong_wind');
+    if (Math.abs(l.vx) < 0.05) this.achievements.unlock('zero_vx_landing');
+
+    // Near-max safe parameter landings
+    const mods2 = DIFFICULTY_MODS[this.difficulty];
+    if (Math.abs(l.angle) > SAFE_LAND_ANGLE * mods2.safeAngleMult * 0.8) this.achievements.unlock('max_angle_land');
+    if (Math.abs(l.vy) > SAFE_LAND_VY * mods2.safeVyMult * 0.8) this.achievements.unlock('max_vy_land');
+
+    // No-rotation landing
+    if (Math.abs(l.angle) < 0.01) this.achievements.unlock('no_rotation_land');
+
+    // Single landing score
+    if (landScore >= 2000) this.achievements.unlock('score_single_2000');
 
     // Score achievements
     if (this.score >= 1000) this.achievements.unlock('score_1000');
@@ -416,10 +527,44 @@ export class GameManager {
     this.levelCompleteTimer = 2.5;
     this.setState(GameState.LEVEL_COMPLETE);
     this.audio.playLevelComplete();
+
+    // No-crash streak tracking
+    this.noCrashStreak++;
+    if (this.noCrashStreak >= 5) this.achievements.unlock('no_crash_5');
+    if (this.noCrashStreak >= 10) this.achievements.unlock('no_crash_10');
+
+    // Zen mode landings
+    if (this.mode === GameMode.ZEN) {
+      this.zenLandings++;
+      if (this.zenLandings >= 100) this.achievements.unlock('zen_100_lands');
+    }
+
+    // Endless mode level achievements
+    if (this.mode === GameMode.ENDLESS) {
+      if (this.level >= 10) this.achievements.unlock('endless_10');
+      if (this.level >= 20) this.achievements.unlock('endless_20');
+    }
   }
 
   private handleCrash(): void {
     const l = this.lander;
+
+    // Check shield power-up
+    if (this.powerUps?.consumeShield()) {
+      // Shield absorbed the crash!
+      this.audio.playShieldBreak();
+      this.particles?.emitExplosion(l.x, l.y, 20);
+      this.shieldSavedThisGame = true;
+      this.achievements.unlock('shield_save');
+
+      // Bounce lander up
+      l.vy = Math.abs(l.vy) * 0.5 + 0.5;
+      l.vx *= 0.3;
+      l.angle *= 0.3;
+      l.angularVel *= 0.3;
+      return;
+    }
+
     l.alive = false;
     l.thrusting = false;
 
@@ -432,6 +577,7 @@ export class GameManager {
     // Stats
     this.statsManager.recordCrash();
     this.perfectCombo = 0;
+    this.noCrashStreak = 0;
 
     // Achievements
     this.achievements.unlock('first_crash');
@@ -443,6 +589,7 @@ export class GameManager {
     const speed = Math.sqrt(l.vx * l.vx + l.vy * l.vy);
     if (speed > MAX_VELOCITY * 0.9) this.achievements.unlock('high_speed_crash');
     if (Math.abs(l.angle) > Math.PI * 0.4) this.achievements.unlock('sideways_crash');
+    if (l.y > 6) this.achievements.unlock('high_altitude_crash');
 
     // Lose life
     if (this.mode !== GameMode.ZEN) {
@@ -507,6 +654,7 @@ export class GameManager {
       if (this.difficulty === Difficulty.EASY) this.achievements.unlock('easy_win');
       if (this.difficulty === Difficulty.NORMAL) this.achievements.unlock('normal_win');
       if (this.difficulty === Difficulty.HARD) this.achievements.unlock('hard_win');
+      if (this.noCrashStreak >= 10) this.achievements.unlock('no_crash_classic');
       this.endGame();
       return;
     }

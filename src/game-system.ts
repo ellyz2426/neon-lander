@@ -2,8 +2,9 @@
 
 import { createSystem } from '@iwsdk/core';
 import { GameManager } from './game';
-import { GameState, SKIN_COLORS } from './types';
+import { GameState, SKIN_COLORS, THEME_COLORS } from './types';
 import { ParticleManager } from './particles';
+import { PowerUpManager } from './powerups';
 import type { Mesh, Object3D } from '@iwsdk/core';
 
 interface RuntimeInput {
@@ -44,6 +45,9 @@ export class GameSystem extends createSystem({}) {
   private shakeTimer = 0;
   private shakeIntensity = 0;
   private lastState: GameState | null = null;
+  private trailTimer = 0;
+  private windParticleTimer = 0;
+  private shieldShimmerTimer = 0;
 
   setRefs(r: GameSystemRefs): void {
     this.refs = r;
@@ -66,6 +70,50 @@ export class GameSystem extends createSystem({}) {
       particles.emitThrust(l.x, l.y - 0.1, l.angle, skinColors.flame);
     }
 
+    // Trail particles (when moving fast enough)
+    if (game.state === GameState.PLAYING) {
+      const l = game.lander;
+      const speed = Math.sqrt(l.vx * l.vx + l.vy * l.vy);
+      this.trailTimer -= dt;
+      if (speed > 0.5 && this.trailTimer <= 0) {
+        this.trailTimer = 0.05;
+        const skinColors = SKIN_COLORS[game.skin];
+        particles.emitTrail(l.x, l.y, l.vx, l.vy, skinColors.emissive);
+      }
+
+      // Proximity warning beeps
+      const altitude = l.y - game.getTerrainHeight(l.x);
+      game.audio.playProximityBeep(altitude);
+    }
+
+    // Shield shimmer particles
+    if (game.powerUps?.shieldActive && game.state === GameState.PLAYING) {
+      this.shieldShimmerTimer -= dt;
+      if (this.shieldShimmerTimer <= 0) {
+        this.shieldShimmerTimer = 0.08;
+        particles.emitShieldShimmer(game.lander.x, game.lander.y);
+      }
+    }
+
+    // Wind ambient particles
+    if (game.currentLevel && Math.abs(game.currentLevel.wind) > 0.1 &&
+      (game.state === GameState.PLAYING || game.state === GameState.READY)) {
+      this.windParticleTimer -= dt;
+      if (this.windParticleTimer <= 0) {
+        this.windParticleTimer = 0.5 + Math.random() * 0.5;
+        const themeColors = THEME_COLORS[game.theme];
+        particles.emitWindParticle(
+          12,
+          game.currentLevel.wind,
+          Math.random() * 6,
+          themeColors.accent,
+        );
+      }
+    }
+
+    // Update power-up visuals
+    game.powerUps?.updateVisuals(dt);
+
     // Detect crash for screen shake
     if (game.state === GameState.CRASHED && this.lastState !== GameState.CRASHED) {
       this.shakeTimer = 0.4;
@@ -73,7 +121,7 @@ export class GameSystem extends createSystem({}) {
     }
     this.lastState = game.state;
 
-    // Camera tracking — smooth follow lander position
+    // Camera tracking - smooth follow lander position
     if (game.state === GameState.PLAYING || game.state === GameState.READY) {
       const l = game.lander;
       this.camTargetX = l.x * CAM_TRACK_STRENGTH;
@@ -125,7 +173,7 @@ export class GameSystem extends createSystem({}) {
     game.rotateRightInput = false;
 
     if (game.state === GameState.PLAYING) {
-      // Keyboard — getKeyPressed for continuous hold, not getKeyDown (single frame)
+      // Keyboard - getKeyPressed for continuous hold, not getKeyDown (single frame)
       if (kb) {
         if (kb.getKeyPressed('KeyW') || kb.getKeyPressed('ArrowUp') || kb.getKeyPressed('Space')) {
           game.thrustInput = true;

@@ -77,6 +77,37 @@ const ACHIEVEMENT_DEFS: { id: string; title: string; description: string; catego
   { id: 'play_1_hour', title: 'Dedicated Pilot', description: 'Play for 1 hour total', category: 'Misc' },
   { id: 'night_owl', title: 'Night Owl', description: 'Play between midnight and 4 AM', category: 'Misc' },
   { id: 'retry_master', title: 'Never Give Up', description: 'Retry a level 5 times', category: 'Misc' },
+  // Power-up achievements
+  { id: 'first_powerup', title: 'Power Surge', description: 'Collect your first power-up', category: 'Power-ups' },
+  { id: 'powerup_10', title: 'Collector', description: 'Collect 10 power-ups', category: 'Power-ups' },
+  { id: 'powerup_25', title: 'Power Hungry', description: 'Collect 25 power-ups', category: 'Power-ups' },
+  { id: 'fuel_hoarder', title: 'Fuel Hoarder', description: 'Collect 5 fuel power-ups', category: 'Power-ups' },
+  { id: 'shield_save', title: 'Guardian Angel', description: 'Survive a crash with a shield', category: 'Power-ups' },
+  { id: 'boost_collector', title: 'Score Hunter', description: 'Use 3 score boost power-ups', category: 'Power-ups' },
+  { id: 'boosted_landing', title: 'Double Down', description: 'Land with 2x score active', category: 'Power-ups' },
+  // Speed records
+  { id: 'land_under_5s', title: 'Lightning Strike', description: 'Land in under 5 seconds', category: 'Speed' },
+  { id: 'land_under_3s', title: 'Instant Descent', description: 'Land in under 3 seconds', category: 'Speed' },
+  { id: 'speed_demon_10', title: 'Speed Run 10', description: 'Complete 10 levels in under 5 min total', category: 'Speed' },
+  // Precision records
+  { id: 'no_rotation_land', title: 'Dead Stick', description: 'Land without rotating at all', category: 'Precision' },
+  { id: 'min_fuel_used', title: 'Efficiency Expert', description: 'Use less than 10% fuel on a landing', category: 'Precision' },
+  { id: 'zero_vx_landing', title: 'Straight Down', description: 'Land with near-zero horizontal velocity', category: 'Precision' },
+  // Endurance
+  { id: 'endless_10', title: 'Endurance Runner', description: 'Reach level 10 in Endless mode', category: 'Endurance' },
+  { id: 'endless_20', title: 'Marathon Pilot', description: 'Reach level 20 in Endless mode', category: 'Endurance' },
+  { id: 'no_crash_classic', title: 'Flawless', description: 'Complete Classic without crashing', category: 'Endurance' },
+  { id: 'no_crash_5', title: 'Clean Streak', description: 'Land 5 levels without crashing', category: 'Endurance' },
+  { id: 'no_crash_10', title: 'Untouchable Pilot', description: 'Land 10 levels without crashing', category: 'Endurance' },
+  // Extreme
+  { id: 'land_min_fuel', title: 'Clutch Landing', description: 'Land with less than 1% fuel', category: 'Extreme' },
+  { id: 'max_angle_land', title: 'Tilt Master', description: 'Land at near-max safe angle', category: 'Extreme' },
+  { id: 'max_vy_land', title: 'Hard Landing', description: 'Land at near-max safe velocity', category: 'Extreme' },
+  { id: 'high_altitude_crash', title: 'Space Debris', description: 'Crash above altitude 6', category: 'Extreme' },
+  { id: 'full_360', title: 'Full Spin', description: 'Complete a full 360 rotation', category: 'Extreme' },
+  // Hidden / secret
+  { id: 'zen_100_lands', title: 'Inner Master', description: 'Land 100 times in Zen mode', category: 'Hidden' },
+  { id: 'score_single_2000', title: 'Jackpot', description: 'Score 2000+ on a single landing', category: 'Hidden' },
 ];
 
 const STORAGE_KEY = 'neon-lander-achievements';
