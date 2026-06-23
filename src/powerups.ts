@@ -8,6 +8,7 @@ import {
   OctahedronGeometry,
   BoxGeometry,
   CylinderGeometry,
+  ConeGeometry,
   PointLight,
   Color,
 } from '@iwsdk/core';
@@ -17,6 +18,8 @@ export enum PowerUpType {
   SHIELD = 'shield',
   SLOW_MO = 'slow_mo',
   SCORE_BOOST = 'score_boost',
+  MAGNET = 'magnet',
+  EXTRA_LIFE = 'extra_life',
 }
 
 export interface PowerUpDef {
@@ -60,6 +63,22 @@ export const POWERUP_DEFS: Record<PowerUpType, PowerUpDef> = {
     emissive: 0xcc9900,
     duration: 0,
     description: '2x score next landing',
+  },
+  [PowerUpType.MAGNET]: {
+    type: PowerUpType.MAGNET,
+    label: 'MAGNET',
+    color: 0xff4488,
+    emissive: 0xcc2266,
+    duration: 6,
+    description: 'Pull toward nearest pad for 6s',
+  },
+  [PowerUpType.EXTRA_LIFE]: {
+    type: PowerUpType.EXTRA_LIFE,
+    label: '+1 UP',
+    color: 0x44ff44,
+    emissive: 0x22cc22,
+    duration: 0,
+    description: 'Grants an extra life',
   },
 };
 
@@ -143,6 +162,12 @@ export class PowerUpManager {
         case PowerUpType.SCORE_BOOST:
           mesh = new Mesh(new BoxGeometry(0.14, 0.14, 0.14), mat);
           break;
+        case PowerUpType.MAGNET:
+          mesh = new Mesh(new ConeGeometry(0.08, 0.16, 5), mat);
+          break;
+        case PowerUpType.EXTRA_LIFE:
+          mesh = new Mesh(new SphereGeometry(0.09, 6, 6), mat);
+          break;
       }
 
       group.add(mesh);
@@ -180,6 +205,11 @@ export class PowerUpManager {
     return null;
   }
 
+  // Magnet state
+  magnetActive = false;
+  magnetPadX = 0;
+  magnetPadY = 0;
+
   applyPowerUp(type: PowerUpType, fuel: { current: number; max: number }): void {
     const def = POWERUP_DEFS[type];
 
@@ -198,6 +228,13 @@ export class PowerUpManager {
       case PowerUpType.SCORE_BOOST:
         this.scoreMultiplier = 2;
         break;
+      case PowerUpType.MAGNET:
+        this.magnetActive = true;
+        this.active.push({ type, remaining: def.duration });
+        break;
+      case PowerUpType.EXTRA_LIFE:
+        // Handled by game manager (adds life)
+        break;
     }
   }
 
@@ -213,6 +250,9 @@ export class PowerUpManager {
             break;
           case PowerUpType.SLOW_MO:
             this.gravityMultiplier = 1;
+            break;
+          case PowerUpType.MAGNET:
+            this.magnetActive = false;
             break;
         }
         this.active.splice(i, 1);
@@ -261,6 +301,9 @@ export class PowerUpManager {
     this.shieldActive = false;
     this.scoreMultiplier = 1;
     this.gravityMultiplier = 1;
+    this.magnetActive = false;
+    this.magnetPadX = 0;
+    this.magnetPadY = 0;
   }
 
   reset(): void {

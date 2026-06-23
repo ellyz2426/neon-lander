@@ -18,6 +18,7 @@ import {
   SKIN_COLORS,
 } from './types';
 import type { Achievement } from './achievements';
+import { loadGame, hasSave, type SaveState } from './savestate';
 
 export class UISystem extends createSystem({
   hud: {
@@ -103,8 +104,16 @@ export class UISystem extends createSystem({
   private lastState: GameState | null = null;
   private hudUpdateTimer = 0;
 
+  // Achievement pagination state
+  private achvPage = 0;
+  private achvCategory = 'ALL';
+  private achvCategories = ['ALL', 'Landing', 'Progression', 'Score', 'Modes', 'Crashes',
+    'Challenge', 'Career', 'Customization', 'Difficulty', 'Misc', 'Power-ups',
+    'Speed', 'Precision', 'Endurance', 'Extreme', 'Hidden'];
+
   onThemeChange: ((theme: ArenaTheme) => void) | null = null;
   onSkinChange: ((skin: LanderSkin) => void) | null = null;
+  onResumeGame: ((save: SaveState) => void) | null = null;
 
   setRefs(refs: {
     game: GameManager;
@@ -174,7 +183,7 @@ export class UISystem extends createSystem({
       const doc = entity.getValue(PanelDocument, 'document') as UIKitDocument | undefined;
       if (!doc) return;
       this.achievementsDoc = doc;
-      this.wireBack(doc);
+      this.wireAchievements(doc);
     });
 
     this.queries.settings.subscribe('qualify', (entity) => {
@@ -223,6 +232,16 @@ export class UISystem extends createSystem({
     playBtn?.addEventListener('click', () => {
       game.audio.playClick();
       game.startGame(game.mode, game.difficulty);
+    });
+
+    // Resume button
+    const resumeBtn = doc.getElementById('btn-resume') as UIKit.Text | undefined;
+    resumeBtn?.addEventListener('click', () => {
+      game.audio.playClick();
+      const save = loadGame();
+      if (save) {
+        this.onResumeGame?.(save);
+      }
     });
 
     const modesBtn = doc.getElementById('btn-modes') as UIKit.Text | undefined;
@@ -366,6 +385,58 @@ export class UISystem extends createSystem({
     });
 
     this.wireBack(doc);
+  }
+
+  private wireAchievements(doc: UIKitDocument): void {
+    const game = this.game;
+
+    // Category navigation
+    const catPrev = doc.getElementById('btn-cat-prev') as UIKit.Text | undefined;
+    catPrev?.addEventListener('click', () => {
+      game.audio.playClick();
+      const idx = this.achvCategories.indexOf(this.achvCategory);
+      this.achvCategory = this.achvCategories[(idx - 1 + this.achvCategories.length) % this.achvCategories.length];
+      this.achvPage = 0;
+      this.updateAchievementsDisplay();
+    });
+
+    const catNext = doc.getElementById('btn-cat-next') as UIKit.Text | undefined;
+    catNext?.addEventListener('click', () => {
+      game.audio.playClick();
+      const idx = this.achvCategories.indexOf(this.achvCategory);
+      this.achvCategory = this.achvCategories[(idx + 1) % this.achvCategories.length];
+      this.achvPage = 0;
+      this.updateAchievementsDisplay();
+    });
+
+    // Page navigation
+    const pagePrev = doc.getElementById('btn-page-prev') as UIKit.Text | undefined;
+    pagePrev?.addEventListener('click', () => {
+      game.audio.playClick();
+      if (this.achvPage > 0) {
+        this.achvPage--;
+        this.updateAchievementsDisplay();
+      }
+    });
+
+    const pageNext = doc.getElementById('btn-page-next') as UIKit.Text | undefined;
+    pageNext?.addEventListener('click', () => {
+      game.audio.playClick();
+      const filtered = this.getFilteredAchievements();
+      const maxPage = Math.max(0, Math.ceil(filtered.length / 8) - 1);
+      if (this.achvPage < maxPage) {
+        this.achvPage++;
+        this.updateAchievementsDisplay();
+      }
+    });
+
+    this.wireBack(doc);
+  }
+
+  private getFilteredAchievements(): Achievement[] {
+    const all = this.game.achievements.getAll();
+    if (this.achvCategory === 'ALL') return all;
+    return all.filter((a) => a.category === this.achvCategory);
   }
 
   private wireBack(doc: UIKitDocument, customAction?: () => void): void {
@@ -532,11 +603,31 @@ export class UISystem extends createSystem({
       const el = this.gameoverDoc!.getElementById(id) as UIKit.Text | undefined;
       el?.setProperties({ text });
     };
+    const setColor = (id: string, color: string) => {
+      const el = this.gameoverDoc!.getElementById(id) as UIKit.Text | undefined;
+      el?.setProperties({ color });
+    };
     setText('final-score', `${game.score}`);
     setText('final-level', `${game.level}`);
     setText('best-score', `${game.leaderboard.getBestScore()}`);
+
+    // Perfects and time
+    setText('final-perfects', `${game.statsManager.stats.perfectLandings}`);
+    const totalSecs = Math.floor(game.totalGameTime);
+    const mins = Math.floor(totalSecs / 60);
+    const secs = totalSecs % 60;
+    setText('final-time', `${mins}:${secs < 10 ? '0' : ''}${secs}`);
+
     const isWin = game.mode === GameMode.CLASSIC && game.level > 10;
     setText('gameover-title', isWin ? 'MISSION COMPLETE' : 'GAME OVER');
+
+    // Star rating
+    const stars = game.getStarRating();
+    const starColor = '#ffcc44';
+    const darkColor = '#333344';
+    setColor('star-1', stars >= 1 ? starColor : darkColor);
+    setColor('star-2', stars >= 2 ? starColor : darkColor);
+    setColor('star-3', stars >= 3 ? starColor : darkColor);
   }
 
   private updateAchievementsDisplay(): void {
@@ -547,16 +638,45 @@ export class UISystem extends createSystem({
       text: `${game.achievements.unlockedCount} / ${game.achievements.totalCount}`,
     });
 
-    const all = game.achievements.getAll();
-    for (let i = 0; i < 8; i++) {
+    // Category label
+    const catEl = this.achievementsDoc.getElementById('achv-category') as UIKit.Text | undefined;
+    catEl?.setProperties({ text: this.achvCategory.toUpperCase() });
+
+    const filtered = this.getFilteredAchievements();
+    const pageSize = 8;
+    const maxPage = Math.max(0, Math.ceil(filtered.length / pageSize) - 1);
+    if (this.achvPage > maxPage) this.achvPage = maxPage;
+    const start = this.achvPage * pageSize;
+    const pageItems = filtered.slice(start, start + pageSize);
+
+    for (let i = 0; i < pageSize; i++) {
+      const iconEl = this.achievementsDoc.getElementById(`achv-icon-${i}`) as UIKit.Text | undefined;
       const nameEl = this.achievementsDoc.getElementById(`achv-name-${i}`) as UIKit.Text | undefined;
       const descEl = this.achievementsDoc.getElementById(`achv-desc-${i}`) as UIKit.Text | undefined;
-      if (i < all.length) {
-        const a = all[i];
-        nameEl?.setProperties({ text: a.unlocked ? a.title : '???' });
-        descEl?.setProperties({ text: a.unlocked ? a.description : 'Locked' });
+      if (i < pageItems.length) {
+        const a = pageItems[i];
+        iconEl?.setProperties({
+          text: a.unlocked ? '*' : '-',
+          color: a.unlocked ? '#ffcc44' : '#333344',
+        });
+        nameEl?.setProperties({
+          text: a.unlocked ? a.title : '???',
+          color: a.unlocked ? '#ffffff' : '#555566',
+        });
+        descEl?.setProperties({
+          text: a.unlocked ? a.description : 'Locked',
+          color: a.unlocked ? '#88aacc' : '#444455',
+        });
+      } else {
+        iconEl?.setProperties({ text: '', color: '#333344' });
+        nameEl?.setProperties({ text: '', color: '#333344' });
+        descEl?.setProperties({ text: '', color: '#333344' });
       }
     }
+
+    // Page indicator
+    const pageEl = this.achievementsDoc.getElementById('achv-page') as UIKit.Text | undefined;
+    pageEl?.setProperties({ text: `${this.achvPage + 1} / ${maxPage + 1}` });
   }
 
   private updateStatsDisplay(): void {
@@ -574,6 +694,22 @@ export class UISystem extends createSystem({
     setText('stat-best-level', `${stats.bestLevel}`);
     setText('stat-best-streak', `${stats.bestPerfectStreak}`);
     setText('stat-total-score', `${stats.totalScore}`);
+  }
+
+  private updateResumeButton(): void {
+    if (!this.menuDoc) return;
+    const resumePanel = this.menuDoc.getElementById('btn-resume') as UIKit.Text | undefined;
+    const hasSaveFile = hasSave();
+    // Show/hide resume button by updating text
+    const resumeText = this.menuDoc.getElementById('btn-resume-text') as UIKit.Text | undefined;
+    if (hasSaveFile) {
+      const save = loadGame();
+      if (save) {
+        resumeText?.setProperties({ text: `RESUME (Lvl ${save.level})` });
+      }
+    } else {
+      resumeText?.setProperties({ text: '' });
+    }
   }
 
   private updateLeaderboardDisplay(): void {
@@ -654,6 +790,8 @@ export class UISystem extends createSystem({
     switch (state) {
       case GameState.MENU:
         if (this.menuEntity?.object3D) this.menuEntity.object3D.visible = true;
+        // Update resume button visibility
+        this.updateResumeButton();
         break;
       case GameState.MODE_SELECT:
         if (this.modeselectEntity?.object3D) this.modeselectEntity.object3D.visible = true;

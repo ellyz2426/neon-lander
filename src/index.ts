@@ -23,6 +23,7 @@ import { buildTerrainMesh, buildStarField, generateLevel } from './terrain';
 import { buildLanderMesh, updateLanderSkin } from './lander';
 import { buildNebulaEffect } from './nebula';
 import { buildApproachGuide, buildLandingBeam, buildTerrainGlowEdge, buildBackgroundGrid } from './vfx';
+import { loadGame } from './savestate';
 import {
   FIELD_OFFSET_Y,
   GameState,
@@ -300,6 +301,22 @@ async function main(): Promise<void> {
   uiSystem.onSkinChange = (skin: LanderSkin) => {
     updateLanderSkin(bodyMesh, flameMesh, thrustLight, skin);
     game.statsManager.recordSkin(skin);
+  };
+
+  // Resume game handler
+  uiSystem.onResumeGame = (save) => {
+    // Apply theme/skin before resuming
+    const theme = save.theme as ArenaTheme;
+    const skin = save.skin as LanderSkin;
+    if (theme !== game.theme) {
+      game.theme = theme;
+      uiSystem.onThemeChange?.(theme);
+    }
+    if (skin !== game.skin) {
+      game.skin = skin;
+      uiSystem.onSkinChange?.(skin);
+    }
+    game.resumeGame(save);
   };
 
   // Achievement toast

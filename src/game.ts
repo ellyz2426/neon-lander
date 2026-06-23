@@ -37,6 +37,7 @@ import { LeaderboardManager } from './leaderboard';
 import { ParticleManager } from './particles';
 import { PowerUpManager, PowerUpType, POWERUP_DEFS } from './powerups';
 import { TutorialManager } from './tutorial';
+import { saveGame, clearSave, type SaveState } from './savestate';
 
 export class GameManager {
   // State
@@ -90,6 +91,8 @@ export class GameManager {
   shieldsUsed = 0;
   slowMosUsed = 0;
   scoreBoostsUsed = 0;
+  magnetsUsed = 0;
+  extraLivesCollected = 0;
   shieldSavedThisGame = false;
 
   // Timers
@@ -144,6 +147,8 @@ export class GameManager {
     this.shieldsUsed = 0;
     this.slowMosUsed = 0;
     this.scoreBoostsUsed = 0;
+    this.magnetsUsed = 0;
+    this.extraLivesCollected = 0;
     this.shieldSavedThisGame = false;
     this.shieldSavesThisGame = 0;
     this.gravityFlipped = false;
@@ -298,6 +303,18 @@ export class GameManager {
       if (collected) {
         this.handlePowerUpCollect(collected);
       }
+
+      // Magnet force: gently pull toward nearest pad
+      if (this.powerUps.magnetActive) {
+        const dx = this.powerUps.magnetPadX - l.x;
+        const dy = this.powerUps.magnetPadY - l.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist > 0.1) {
+          const force = 0.8 / Math.max(dist, 0.5);
+          l.vx += (dx / dist) * force * dt;
+          l.vy += (dy / dist) * force * dt;
+        }
+      }
     }
 
     // Hover tracking
@@ -401,6 +418,12 @@ export class GameManager {
       case PowerUpType.SCORE_BOOST:
         this.scoreBoostsUsed++;
         break;
+      case PowerUpType.MAGNET:
+        this.magnetsUsed++;
+        break;
+      case PowerUpType.EXTRA_LIFE:
+        this.extraLivesCollected++;
+        break;
     }
 
     this.powerUps!.applyPowerUp(type, {
@@ -414,6 +437,28 @@ export class GameManager {
         this.currentLevel?.fuel ?? 100,
         this.lander.fuel + (this.currentLevel?.fuel ?? 100) * 0.25,
       );
+    }
+
+    // Extra life: grant +1
+    if (type === PowerUpType.EXTRA_LIFE) {
+      this.lives++;
+      this.achievements.unlock('extra_life_collect');
+    }
+
+    // Magnet: find nearest pad and set target
+    if (type === PowerUpType.MAGNET && this.currentLevel) {
+      let nearestDist = Infinity;
+      for (const pad of this.currentLevel.pads) {
+        const dx = this.lander.x - pad.x;
+        const dy = this.lander.y - pad.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < nearestDist) {
+          nearestDist = dist;
+          this.powerUps!.magnetPadX = pad.x;
+          this.powerUps!.magnetPadY = pad.y;
+        }
+      }
+      this.achievements.unlock('magnet_collect');
     }
 
     // Power-up achievements
@@ -563,6 +608,7 @@ export class GameManager {
     this.levelCompleteTimer = 2.5;
     this.setState(GameState.LEVEL_COMPLETE);
     this.audio.playLevelComplete();
+    this.autoSave();
 
     // No-crash streak tracking
     this.noCrashStreak++;
@@ -585,6 +631,17 @@ export class GameManager {
     // Slow-mo landing achievement
     if (this.powerUps?.gravityMultiplier !== undefined && this.powerUps.gravityMultiplier < 1) {
       this.achievements.unlock('slow_mo_land');
+    }
+
+    // Magnet landing achievement
+    if (this.powerUps?.magnetActive) {
+      this.achievements.unlock('magnet_land');
+    }
+
+    // All power-up types achievement
+    if (this.fuelPickups > 0 && this.shieldsUsed > 0 && this.slowMosUsed > 0 &&
+        this.scoreBoostsUsed > 0 && this.magnetsUsed > 0 && this.extraLivesCollected > 0) {
+      this.achievements.unlock('all_powerup_types');
     }
 
     // Zero fuel landing
@@ -751,6 +808,7 @@ export class GameManager {
     }
 
     this.loadLevel();
+    this.autoSave();
   }
 
   private endGame(): void {
@@ -773,6 +831,65 @@ export class GameManager {
     }
 
     this.setState(GameState.GAME_OVER);
+    clearSave(); // Clear auto-save on game end
+  }
+
+  // Auto-save for resume capability
+  autoSave(): void {
+    if (this.state === GameState.MENU || this.state === GameState.GAME_OVER) return;
+    const data: SaveState = {
+      mode: this.mode,
+      difficulty: this.difficulty,
+      level: this.level,
+      score: this.score,
+      lives: this.lives,
+      theme: this.theme,
+      skin: this.skin,
+      totalGameTime: this.totalGameTime,
+      perfectCombo: this.perfectCombo,
+      noCrashStreak: this.noCrashStreak,
+      totalPowerUpsCollected: this.totalPowerUpsCollected,
+      timestamp: Date.now(),
+    };
+    saveGame(data);
+  }
+
+  // Resume from saved state
+  resumeGame(save: SaveState): void {
+    this.mode = save.mode as GameMode;
+    this.difficulty = save.difficulty as Difficulty;
+    this.level = save.level;
+    this.score = save.score;
+    this.lives = save.lives;
+    this.theme = save.theme as ArenaTheme;
+    this.skin = save.skin as LanderSkin;
+    this.totalGameTime = save.totalGameTime;
+    this.perfectCombo = save.perfectCombo;
+    this.noCrashStreak = save.noCrashStreak;
+    this.totalPowerUpsCollected = save.totalPowerUpsCollected;
+    this.retryCountThisLevel = 0;
+    this.gravityFlipped = false;
+    this.padsLandedThisLevel = new Set();
+    this.powerUps?.resetActive();
+
+    this.statsManager.recordGameStart(this.mode);
+    this.statsManager.recordTheme(this.theme);
+    this.statsManager.recordSkin(this.skin);
+
+    this.loadLevel();
+    clearSave();
+  }
+
+  // Star rating for game over (0-3 stars)
+  getStarRating(): number {
+    let stars = 0;
+    // Star 1: Reached level 3+ or scored 500+
+    if (this.level >= 3 || this.score >= 500) stars++;
+    // Star 2: Reached level 6+ or scored 3000+ or had a perfect landing
+    if (this.level >= 6 || this.score >= 3000 || this.statsManager.stats.perfectLandings > 0) stars++;
+    // Star 3: Completed classic (level 11) or scored 10000+ or 3+ perfect combo
+    if (this.level > 10 || this.score >= 10000 || this.perfectCombo >= 3) stars++;
+    return stars;
   }
 
   togglePause(): void {

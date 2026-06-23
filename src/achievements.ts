@@ -142,6 +142,11 @@ const ACHIEVEMENT_DEFS: { id: string; title: string; description: string; catego
   { id: 'powerup_50', title: 'Power Addict', description: 'Collect 50 power-ups', category: 'Power-ups' },
   { id: 'shield_3_saves', title: 'Lucky Charm', description: 'Shield saves 3 times in one game', category: 'Power-ups' },
   { id: 'slow_mo_land', title: 'Bullet Time', description: 'Land while slow-mo is active', category: 'Power-ups' },
+  // Magnet & Extra Life
+  { id: 'magnet_collect', title: 'Attraction', description: 'Collect a magnet power-up', category: 'Power-ups' },
+  { id: 'magnet_land', title: 'Guided Landing', description: 'Land while magnet is active', category: 'Power-ups' },
+  { id: 'extra_life_collect', title: 'Second Chance', description: 'Collect an extra life', category: 'Power-ups' },
+  { id: 'all_powerup_types', title: 'Full Arsenal', description: 'Collect all 6 power-up types', category: 'Power-ups' },
 ];
 
 const STORAGE_KEY = 'neon-lander-achievements';
