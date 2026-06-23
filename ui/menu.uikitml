@@ -1,0 +1,28 @@
+<panel width="300" height="360" backgroundColor="#000a1acc" borderRadius="12" flexDirection="column" alignItems="center" padding="16" gap="10">
+  <text fontSize="28" color="#00ccff" fontWeight="bold">NEON LANDER</text>
+  <text fontSize="11" color="#4488aa">Lunar Landing Simulator</text>
+  <panel height="8"></panel>
+  <panel id="btn-play" width="220" height="40" backgroundColor="#006644" borderRadius="8" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#008855">
+    <text fontSize="16" color="#44ffaa" fontWeight="bold">PLAY</text>
+  </panel>
+  <panel id="btn-modes" width="220" height="36" backgroundColor="#003366" borderRadius="8" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#004488">
+    <text fontSize="14" color="#44aaff" fontWeight="bold">GAME MODES</text>
+  </panel>
+  <panel id="btn-settings" width="220" height="36" backgroundColor="#333344" borderRadius="8" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#444455">
+    <text fontSize="14" color="#aaaacc" fontWeight="bold">SETTINGS</text>
+  </panel>
+  <panel id="btn-achievements" width="220" height="36" backgroundColor="#333344" borderRadius="8" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#444455">
+    <text fontSize="14" color="#ffcc44" fontWeight="bold">ACHIEVEMENTS</text>
+  </panel>
+  <panel flexDirection="row" gap="8">
+    <panel id="btn-stats" width="105" height="32" backgroundColor="#222233" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#333344">
+      <text fontSize="12" color="#8888aa">STATS</text>
+    </panel>
+    <panel id="btn-leaderboard" width="105" height="32" backgroundColor="#222233" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#333344">
+      <text fontSize="12" color="#8888aa">SCORES</text>
+    </panel>
+  </panel>
+  <panel id="btn-help" width="220" height="30" backgroundColor="#1a1a2a" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#222233">
+    <text fontSize="11" color="#666688">HELP</text>
+  </panel>
+</panel>

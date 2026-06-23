@@ -1,0 +1,10 @@
+<panel width="240" height="180" backgroundColor="#000a1acc" borderRadius="12" flexDirection="column" alignItems="center" padding="16" gap="12">
+  <text fontSize="22" color="#ffcc44" fontWeight="bold">PAUSED</text>
+  <panel height="6"></panel>
+  <panel id="btn-resume" width="180" height="38" backgroundColor="#006644" borderRadius="8" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#008855">
+    <text fontSize="15" color="#44ffaa" fontWeight="bold">RESUME</text>
+  </panel>
+  <panel id="btn-menu" width="180" height="34" backgroundColor="#333344" borderRadius="8" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#444455">
+    <text fontSize="13" color="#aaaacc" fontWeight="bold">MAIN MENU</text>
+  </panel>
+</panel>

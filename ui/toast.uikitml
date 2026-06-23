@@ -1,0 +1,4 @@
+<panel width="200" height="60" backgroundColor="#1a0033dd" borderRadius="8" flexDirection="column" alignItems="center" justifyContent="center" padding="8" gap="3">
+  <text id="toast-title" fontSize="12" color="#ffcc44" fontWeight="bold">Achievement!</text>
+  <text id="toast-desc" fontSize="9" color="#aaaacc">Description</text>
+</panel>

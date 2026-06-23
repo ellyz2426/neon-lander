@@ -1,0 +1,47 @@
+<panel width="300" height="340" backgroundColor="#000a1acc" borderRadius="12" flexDirection="column" alignItems="center" padding="14" gap="6">
+  <text fontSize="18" color="#44aaff" fontWeight="bold">CONTROLS</text>
+  <panel height="6"></panel>
+  <text fontSize="13" color="#ffcc44" fontWeight="bold">BROWSER</text>
+  <panel flexDirection="column" gap="4" width="260">
+    <panel flexDirection="row" justifyContent="space-between">
+      <text fontSize="11" color="#ffffff">W / Up Arrow</text>
+      <text fontSize="11" color="#6688aa">Thrust</text>
+    </panel>
+    <panel flexDirection="row" justifyContent="space-between">
+      <text fontSize="11" color="#ffffff">A / Left Arrow</text>
+      <text fontSize="11" color="#6688aa">Rotate Left</text>
+    </panel>
+    <panel flexDirection="row" justifyContent="space-between">
+      <text fontSize="11" color="#ffffff">D / Right Arrow</text>
+      <text fontSize="11" color="#6688aa">Rotate Right</text>
+    </panel>
+    <panel flexDirection="row" justifyContent="space-between">
+      <text fontSize="11" color="#ffffff">ESC / P</text>
+      <text fontSize="11" color="#6688aa">Pause</text>
+    </panel>
+  </panel>
+  <panel height="8"></panel>
+  <text fontSize="13" color="#ffcc44" fontWeight="bold">VR (Quest / WebXR)</text>
+  <panel flexDirection="column" gap="4" width="260">
+    <panel flexDirection="row" justifyContent="space-between">
+      <text fontSize="11" color="#ffffff">Right Trigger</text>
+      <text fontSize="11" color="#6688aa">Thrust</text>
+    </panel>
+    <panel flexDirection="row" justifyContent="space-between">
+      <text fontSize="11" color="#ffffff">Left Thumbstick</text>
+      <text fontSize="11" color="#6688aa">Rotate</text>
+    </panel>
+    <panel flexDirection="row" justifyContent="space-between">
+      <text fontSize="11" color="#ffffff">B / Y Button</text>
+      <text fontSize="11" color="#6688aa">Pause</text>
+    </panel>
+    <panel flexDirection="row" justifyContent="space-between">
+      <text fontSize="11" color="#ffffff">Laser Pointer</text>
+      <text fontSize="11" color="#6688aa">Select Menu</text>
+    </panel>
+  </panel>
+  <panel height="8"></panel>
+  <panel id="btn-back" width="200" height="32" backgroundColor="#222233" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#333344">
+    <text fontSize="12" color="#8888aa" fontWeight="bold">BACK</text>
+  </panel>
+</panel>

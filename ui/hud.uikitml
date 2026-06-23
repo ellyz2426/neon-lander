@@ -1,0 +1,39 @@
+<panel width="400" height="120" backgroundColor="#00112240" borderRadius="8" flexDirection="row" justifyContent="space-between" padding="8" gap="6">
+  <panel flexDirection="column" gap="2" width="80">
+    <text fontSize="9" color="#44aaff" fontWeight="bold">FUEL</text>
+    <panel id="fuel-bar" width="70" height="8" backgroundColor="#00ff88" borderRadius="3"></panel>
+    <text id="fuel-value" fontSize="11" color="#00ff88" fontWeight="bold">100%</text>
+  </panel>
+  <panel flexDirection="column" gap="2" alignItems="center" width="55">
+    <text fontSize="9" color="#44aaff" fontWeight="bold">ALT</text>
+    <text id="alt-value" fontSize="14" color="#ffffff" fontWeight="bold">0.0</text>
+  </panel>
+  <panel flexDirection="column" gap="2" alignItems="center" width="55">
+    <text fontSize="9" color="#44aaff" fontWeight="bold">VX</text>
+    <text id="vx-value" fontSize="14" color="#ffffff" fontWeight="bold">0.0</text>
+  </panel>
+  <panel flexDirection="column" gap="2" alignItems="center" width="55">
+    <text fontSize="9" color="#44aaff" fontWeight="bold">VY</text>
+    <text id="vy-value" fontSize="14" color="#ffffff" fontWeight="bold">0.0</text>
+  </panel>
+  <panel flexDirection="column" gap="2" alignItems="center" width="45">
+    <text fontSize="9" color="#44aaff" fontWeight="bold">ANGLE</text>
+    <text id="angle-value" fontSize="14" color="#ffffff" fontWeight="bold">0</text>
+  </panel>
+  <panel flexDirection="column" gap="2" alignItems="center" width="45">
+    <text fontSize="9" color="#44aaff" fontWeight="bold">WIND</text>
+    <text id="wind-value" fontSize="14" color="#ffcc44" fontWeight="bold">0.0</text>
+  </panel>
+  <panel flexDirection="column" gap="2" alignItems="center" width="55">
+    <text fontSize="9" color="#ff8844" fontWeight="bold">SCORE</text>
+    <text id="score-value" fontSize="14" color="#ff8844" fontWeight="bold">0</text>
+  </panel>
+  <panel flexDirection="column" gap="2" alignItems="center" width="35">
+    <text fontSize="9" color="#ff4466" fontWeight="bold">LVL</text>
+    <text id="level-value" fontSize="14" color="#ff4466" fontWeight="bold">1</text>
+  </panel>
+  <panel flexDirection="column" gap="2" alignItems="center" width="35">
+    <text fontSize="9" color="#ff4466" fontWeight="bold">LIVES</text>
+    <text id="lives-value" fontSize="14" color="#ff4466" fontWeight="bold">3</text>
+  </panel>
+</panel>

@@ -1,0 +1,43 @@
+<panel width="300" height="380" backgroundColor="#0a0015cc" borderRadius="12" flexDirection="column" alignItems="center" padding="14" gap="4">
+  <text fontSize="18" color="#ffcc44" fontWeight="bold">ACHIEVEMENTS</text>
+  <text id="achv-count" fontSize="11" color="#6688aa">0 / 55</text>
+  <panel height="4"></panel>
+  <panel flexDirection="column" gap="4" width="260">
+    <panel flexDirection="row" gap="6" alignItems="center">
+      <text id="achv-name-0" fontSize="11" color="#ffffff" fontWeight="bold" width="120">???</text>
+      <text id="achv-desc-0" fontSize="9" color="#6688aa" width="130">Locked</text>
+    </panel>
+    <panel flexDirection="row" gap="6" alignItems="center">
+      <text id="achv-name-1" fontSize="11" color="#ffffff" fontWeight="bold" width="120">???</text>
+      <text id="achv-desc-1" fontSize="9" color="#6688aa" width="130">Locked</text>
+    </panel>
+    <panel flexDirection="row" gap="6" alignItems="center">
+      <text id="achv-name-2" fontSize="11" color="#ffffff" fontWeight="bold" width="120">???</text>
+      <text id="achv-desc-2" fontSize="9" color="#6688aa" width="130">Locked</text>
+    </panel>
+    <panel flexDirection="row" gap="6" alignItems="center">
+      <text id="achv-name-3" fontSize="11" color="#ffffff" fontWeight="bold" width="120">???</text>
+      <text id="achv-desc-3" fontSize="9" color="#6688aa" width="130">Locked</text>
+    </panel>
+    <panel flexDirection="row" gap="6" alignItems="center">
+      <text id="achv-name-4" fontSize="11" color="#ffffff" fontWeight="bold" width="120">???</text>
+      <text id="achv-desc-4" fontSize="9" color="#6688aa" width="130">Locked</text>
+    </panel>
+    <panel flexDirection="row" gap="6" alignItems="center">
+      <text id="achv-name-5" fontSize="11" color="#ffffff" fontWeight="bold" width="120">???</text>
+      <text id="achv-desc-5" fontSize="9" color="#6688aa" width="130">Locked</text>
+    </panel>
+    <panel flexDirection="row" gap="6" alignItems="center">
+      <text id="achv-name-6" fontSize="11" color="#ffffff" fontWeight="bold" width="120">???</text>
+      <text id="achv-desc-6" fontSize="9" color="#6688aa" width="130">Locked</text>
+    </panel>
+    <panel flexDirection="row" gap="6" alignItems="center">
+      <text id="achv-name-7" fontSize="11" color="#ffffff" fontWeight="bold" width="120">???</text>
+      <text id="achv-desc-7" fontSize="9" color="#6688aa" width="130">Locked</text>
+    </panel>
+  </panel>
+  <panel height="6"></panel>
+  <panel id="btn-back" width="200" height="32" backgroundColor="#222233" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#333344">
+    <text fontSize="12" color="#8888aa" fontWeight="bold">BACK</text>
+  </panel>
+</panel>

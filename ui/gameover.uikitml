@@ -1,0 +1,25 @@
+<panel width="280" height="280" backgroundColor="#0a0015cc" borderRadius="12" flexDirection="column" alignItems="center" padding="16" gap="10">
+  <text id="gameover-title" fontSize="24" color="#ff4466" fontWeight="bold">GAME OVER</text>
+  <panel height="6"></panel>
+  <panel flexDirection="row" gap="20">
+    <panel flexDirection="column" alignItems="center" gap="2">
+      <text fontSize="10" color="#6688aa">SCORE</text>
+      <text id="final-score" fontSize="20" color="#ffcc44" fontWeight="bold">0</text>
+    </panel>
+    <panel flexDirection="column" alignItems="center" gap="2">
+      <text fontSize="10" color="#6688aa">LEVEL</text>
+      <text id="final-level" fontSize="20" color="#44aaff" fontWeight="bold">1</text>
+    </panel>
+  </panel>
+  <panel flexDirection="column" alignItems="center" gap="2">
+    <text fontSize="10" color="#6688aa">BEST SCORE</text>
+    <text id="best-score" fontSize="16" color="#ff8844" fontWeight="bold">0</text>
+  </panel>
+  <panel height="8"></panel>
+  <panel id="btn-retry" width="200" height="38" backgroundColor="#006644" borderRadius="8" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#008855">
+    <text fontSize="15" color="#44ffaa" fontWeight="bold">RETRY</text>
+  </panel>
+  <panel id="btn-menu" width="200" height="34" backgroundColor="#333344" borderRadius="8" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#444455">
+    <text fontSize="13" color="#aaaacc" fontWeight="bold">MAIN MENU</text>
+  </panel>
+</panel>

@@ -1,0 +1,75 @@
+<panel width="320" height="400" backgroundColor="#000a1acc" borderRadius="12" flexDirection="column" alignItems="center" padding="14" gap="6">
+  <text fontSize="18" color="#44aaff" fontWeight="bold">SETTINGS</text>
+  <panel height="4"></panel>
+  <text fontSize="11" color="#6688aa">DIFFICULTY</text>
+  <panel flexDirection="row" gap="6">
+    <panel id="btn-diff-easy" width="75" height="28" backgroundColor="#003322" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#004433">
+      <text fontSize="11" color="#44ff88">EASY</text>
+    </panel>
+    <panel id="btn-diff-normal" width="75" height="28" backgroundColor="#002244" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#003355">
+      <text fontSize="11" color="#44aaff">NORMAL</text>
+    </panel>
+    <panel id="btn-diff-hard" width="75" height="28" backgroundColor="#330011" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#440022">
+      <text fontSize="11" color="#ff4466">HARD</text>
+    </panel>
+  </panel>
+  <text id="current-diff" fontSize="10" color="#ffffff">NORMAL</text>
+  <panel height="4"></panel>
+  <text fontSize="11" color="#6688aa">ARENA THEME</text>
+  <panel flexDirection="row" gap="4" flexWrap="wrap" justifyContent="center" width="280">
+    <panel id="btn-theme-deep_space" width="85" height="26" backgroundColor="#000822" borderRadius="4" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#001133">
+      <text fontSize="9" color="#4488ff">DEEP SPACE</text>
+    </panel>
+    <panel id="btn-theme-lunar" width="85" height="26" backgroundColor="#111118" borderRadius="4" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#222228">
+      <text fontSize="9" color="#aaaacc">LUNAR</text>
+    </panel>
+    <panel id="btn-theme-mars" width="85" height="26" backgroundColor="#110800" borderRadius="4" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#221000">
+      <text fontSize="9" color="#ff6633">MARS</text>
+    </panel>
+    <panel id="btn-theme-ice_moon" width="85" height="26" backgroundColor="#001122" borderRadius="4" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#002233">
+      <text fontSize="9" color="#66ccff">ICE MOON</text>
+    </panel>
+    <panel id="btn-theme-neon_city" width="85" height="26" backgroundColor="#110022" borderRadius="4" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#220033">
+      <text fontSize="9" color="#ff66ff">NEON CITY</text>
+    </panel>
+  </panel>
+  <text id="current-theme" fontSize="10" color="#ffffff">DEEP SPACE</text>
+  <panel height="4"></panel>
+  <text fontSize="11" color="#6688aa">LANDER SKIN</text>
+  <panel flexDirection="row" gap="4" flexWrap="wrap" justifyContent="center" width="280">
+    <panel id="btn-skin-neon_blue" width="55" height="24" backgroundColor="#002244" borderRadius="4" justifyContent="center" alignItems="center" cursor="pointer">
+      <text fontSize="8" color="#4488ff">NEON</text>
+    </panel>
+    <panel id="btn-skin-crimson" width="55" height="24" backgroundColor="#220011" borderRadius="4" justifyContent="center" alignItems="center" cursor="pointer">
+      <text fontSize="8" color="#ff4466">RED</text>
+    </panel>
+    <panel id="btn-skin-emerald" width="55" height="24" backgroundColor="#002200" borderRadius="4" justifyContent="center" alignItems="center" cursor="pointer">
+      <text fontSize="8" color="#44ff66">GREEN</text>
+    </panel>
+    <panel id="btn-skin-gold" width="55" height="24" backgroundColor="#222200" borderRadius="4" justifyContent="center" alignItems="center" cursor="pointer">
+      <text fontSize="8" color="#ffcc44">GOLD</text>
+    </panel>
+    <panel id="btn-skin-phantom" width="55" height="24" backgroundColor="#111122" borderRadius="4" justifyContent="center" alignItems="center" cursor="pointer">
+      <text fontSize="8" color="#aaccff">GHOST</text>
+    </panel>
+  </panel>
+  <text id="current-skin" fontSize="10" color="#ffffff">NEON BLUE</text>
+  <panel height="4"></panel>
+  <text fontSize="11" color="#6688aa">VOLUME</text>
+  <panel flexDirection="row" gap="8" alignItems="center">
+    <panel id="btn-vol-down" width="30" height="26" backgroundColor="#222233" borderRadius="4" justifyContent="center" alignItems="center" cursor="pointer">
+      <text fontSize="14" color="#aaaacc">-</text>
+    </panel>
+    <text id="current-vol" fontSize="12" color="#ffffff" width="50" textAlign="center">50%</text>
+    <panel id="btn-vol-up" width="30" height="26" backgroundColor="#222233" borderRadius="4" justifyContent="center" alignItems="center" cursor="pointer">
+      <text fontSize="14" color="#aaaacc">+</text>
+    </panel>
+    <panel id="btn-mute" width="50" height="26" backgroundColor="#222233" borderRadius="4" justifyContent="center" alignItems="center" cursor="pointer">
+      <text fontSize="10" color="#888899">MUTE</text>
+    </panel>
+  </panel>
+  <panel height="6"></panel>
+  <panel id="btn-back" width="200" height="32" backgroundColor="#222233" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#333344">
+    <text fontSize="12" color="#8888aa" fontWeight="bold">BACK</text>
+  </panel>
+</panel>

@@ -1,0 +1,55 @@
+<panel width="280" height="340" backgroundColor="#0a0015cc" borderRadius="12" flexDirection="column" alignItems="center" padding="14" gap="4">
+  <text fontSize="18" color="#ff8844" fontWeight="bold">LEADERBOARD</text>
+  <panel height="4"></panel>
+  <panel flexDirection="row" gap="8" width="240">
+    <text fontSize="10" color="#6688aa" fontWeight="bold" width="40">RANK</text>
+    <text fontSize="10" color="#6688aa" fontWeight="bold" width="100">SCORE</text>
+    <text fontSize="10" color="#6688aa" fontWeight="bold" width="80">DATE</text>
+  </panel>
+  <panel flexDirection="column" gap="3" width="240">
+    <panel flexDirection="row" gap="8">
+      <text id="lb-rank-0" fontSize="11" color="#ffcc44" width="40">#1</text>
+      <text id="lb-score-0" fontSize="11" color="#ffffff" fontWeight="bold" width="100">---</text>
+      <text id="lb-date-0" fontSize="9" color="#6688aa" width="80"></text>
+    </panel>
+    <panel flexDirection="row" gap="8">
+      <text id="lb-rank-1" fontSize="11" color="#cccccc" width="40">#2</text>
+      <text id="lb-score-1" fontSize="11" color="#ffffff" fontWeight="bold" width="100">---</text>
+      <text id="lb-date-1" fontSize="9" color="#6688aa" width="80"></text>
+    </panel>
+    <panel flexDirection="row" gap="8">
+      <text id="lb-rank-2" fontSize="11" color="#cc8844" width="40">#3</text>
+      <text id="lb-score-2" fontSize="11" color="#ffffff" fontWeight="bold" width="100">---</text>
+      <text id="lb-date-2" fontSize="9" color="#6688aa" width="80"></text>
+    </panel>
+    <panel flexDirection="row" gap="8">
+      <text id="lb-rank-3" fontSize="11" color="#8888aa" width="40">#4</text>
+      <text id="lb-score-3" fontSize="11" color="#ffffff" width="100">---</text>
+      <text id="lb-date-3" fontSize="9" color="#6688aa" width="80"></text>
+    </panel>
+    <panel flexDirection="row" gap="8">
+      <text id="lb-rank-4" fontSize="11" color="#8888aa" width="40">#5</text>
+      <text id="lb-score-4" fontSize="11" color="#ffffff" width="100">---</text>
+      <text id="lb-date-4" fontSize="9" color="#6688aa" width="80"></text>
+    </panel>
+    <panel flexDirection="row" gap="8">
+      <text id="lb-rank-5" fontSize="11" color="#8888aa" width="40">#6</text>
+      <text id="lb-score-5" fontSize="11" color="#ffffff" width="100">---</text>
+      <text id="lb-date-5" fontSize="9" color="#6688aa" width="80"></text>
+    </panel>
+    <panel flexDirection="row" gap="8">
+      <text id="lb-rank-6" fontSize="11" color="#8888aa" width="40">#7</text>
+      <text id="lb-score-6" fontSize="11" color="#ffffff" width="100">---</text>
+      <text id="lb-date-6" fontSize="9" color="#6688aa" width="80"></text>
+    </panel>
+    <panel flexDirection="row" gap="8">
+      <text id="lb-rank-7" fontSize="11" color="#8888aa" width="40">#8</text>
+      <text id="lb-score-7" fontSize="11" color="#ffffff" width="100">---</text>
+      <text id="lb-date-7" fontSize="9" color="#6688aa" width="80"></text>
+    </panel>
+  </panel>
+  <panel height="6"></panel>
+  <panel id="btn-back" width="200" height="32" backgroundColor="#222233" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#333344">
+    <text fontSize="12" color="#8888aa" fontWeight="bold">BACK</text>
+  </panel>
+</panel>

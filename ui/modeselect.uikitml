@@ -1,0 +1,26 @@
+<panel width="320" height="360" backgroundColor="#000a1acc" borderRadius="12" flexDirection="column" alignItems="center" padding="14" gap="6">
+  <text fontSize="20" color="#44aaff" fontWeight="bold">GAME MODES</text>
+  <panel height="4"></panel>
+  <panel id="btn-mode-classic" width="260" height="36" backgroundColor="#003355" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#004466">
+    <text fontSize="13" color="#44ccff" fontWeight="bold">CLASSIC - 10 Levels</text>
+  </panel>
+  <panel id="btn-mode-time_attack" width="260" height="36" backgroundColor="#333300" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#444411">
+    <text fontSize="13" color="#ffcc44" fontWeight="bold">TIME ATTACK - Race the Clock</text>
+  </panel>
+  <panel id="btn-mode-precision" width="260" height="36" backgroundColor="#330033" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#440044">
+    <text fontSize="13" color="#ff88ff" fontWeight="bold">PRECISION - Accuracy Matters</text>
+  </panel>
+  <panel id="btn-mode-endless" width="260" height="36" backgroundColor="#003300" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#004400">
+    <text fontSize="13" color="#44ff88" fontWeight="bold">ENDLESS - Survive Forever</text>
+  </panel>
+  <panel id="btn-mode-zen" width="260" height="36" backgroundColor="#001133" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#002244">
+    <text fontSize="13" color="#88aaff" fontWeight="bold">ZEN - Unlimited Fuel</text>
+  </panel>
+  <panel id="btn-mode-daily" width="260" height="36" backgroundColor="#331100" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#442200">
+    <text fontSize="13" color="#ff8844" fontWeight="bold">DAILY CHALLENGE</text>
+  </panel>
+  <panel height="4"></panel>
+  <panel id="btn-back" width="200" height="32" backgroundColor="#222233" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#333344">
+    <text fontSize="12" color="#8888aa" fontWeight="bold">BACK</text>
+  </panel>
+</panel>

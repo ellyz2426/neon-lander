@@ -1,0 +1,42 @@
+<panel width="280" height="320" backgroundColor="#0a0015cc" borderRadius="12" flexDirection="column" alignItems="center" padding="14" gap="6">
+  <text fontSize="18" color="#44aaff" fontWeight="bold">STATISTICS</text>
+  <panel height="6"></panel>
+  <panel flexDirection="column" gap="5" width="240">
+    <panel flexDirection="row" justifyContent="space-between">
+      <text fontSize="11" color="#6688aa">Games Played</text>
+      <text id="stat-games" fontSize="11" color="#ffffff" fontWeight="bold">0</text>
+    </panel>
+    <panel flexDirection="row" justifyContent="space-between">
+      <text fontSize="11" color="#6688aa">Total Landings</text>
+      <text id="stat-landings" fontSize="11" color="#ffffff" fontWeight="bold">0</text>
+    </panel>
+    <panel flexDirection="row" justifyContent="space-between">
+      <text fontSize="11" color="#6688aa">Total Crashes</text>
+      <text id="stat-crashes" fontSize="11" color="#ffffff" fontWeight="bold">0</text>
+    </panel>
+    <panel flexDirection="row" justifyContent="space-between">
+      <text fontSize="11" color="#6688aa">Perfect Landings</text>
+      <text id="stat-perfect" fontSize="11" color="#ffcc44" fontWeight="bold">0</text>
+    </panel>
+    <panel flexDirection="row" justifyContent="space-between">
+      <text fontSize="11" color="#6688aa">Best Score</text>
+      <text id="stat-best-score" fontSize="11" color="#ff8844" fontWeight="bold">0</text>
+    </panel>
+    <panel flexDirection="row" justifyContent="space-between">
+      <text fontSize="11" color="#6688aa">Best Level</text>
+      <text id="stat-best-level" fontSize="11" color="#44aaff" fontWeight="bold">0</text>
+    </panel>
+    <panel flexDirection="row" justifyContent="space-between">
+      <text fontSize="11" color="#6688aa">Best Perfect Streak</text>
+      <text id="stat-best-streak" fontSize="11" color="#44ff88" fontWeight="bold">0</text>
+    </panel>
+    <panel flexDirection="row" justifyContent="space-between">
+      <text fontSize="11" color="#6688aa">Total Score</text>
+      <text id="stat-total-score" fontSize="11" color="#ffffff" fontWeight="bold">0</text>
+    </panel>
+  </panel>
+  <panel height="8"></panel>
+  <panel id="btn-back" width="200" height="32" backgroundColor="#222233" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#333344">
+    <text fontSize="12" color="#8888aa" fontWeight="bold">BACK</text>
+  </panel>
+</panel>
