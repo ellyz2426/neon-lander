@@ -173,6 +173,15 @@ const ACHIEVEMENT_DEFS: { id: string; title: string; description: string; catego
   // Moving pad achievements
   { id: 'land_moving_pad', title: 'Moving Target', description: 'Land on a moving pad', category: 'Challenge' },
   { id: 'land_moving_3x', title: 'Moving Bullseye', description: 'Land on a moving 3x pad', category: 'Challenge' },
+  // Upgrade achievements
+  { id: 'first_upgrade', title: 'Upgraded', description: 'Purchase your first upgrade', category: 'Upgrades' },
+  { id: 'max_thrust', title: 'Full Throttle', description: 'Max out Thrust Power', category: 'Upgrades' },
+  { id: 'max_fuel_eff', title: 'Green Machine', description: 'Max out Fuel Efficiency', category: 'Upgrades' },
+  { id: 'max_rotation', title: 'Spin Doctor', description: 'Max out Rotation Speed', category: 'Upgrades' },
+  { id: 'max_armor', title: 'Tank', description: 'Max out Hull Armor', category: 'Upgrades' },
+  { id: 'max_landing_gear', title: 'Soft Touch', description: 'Max out Landing Gear', category: 'Upgrades' },
+  { id: 'all_upgrades_max', title: 'Fully Loaded', description: 'Max out all upgrades', category: 'Upgrades' },
+  { id: 'spent_10k', title: 'Big Spender', description: 'Spend 10,000 on upgrades', category: 'Upgrades' },
 ];
 
 const STORAGE_KEY = 'neon-lander-achievements';

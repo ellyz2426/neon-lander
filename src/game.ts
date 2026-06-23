@@ -37,6 +37,7 @@ import { LeaderboardManager } from './leaderboard';
 import { ParticleManager } from './particles';
 import { PowerUpManager, PowerUpType, POWERUP_DEFS } from './powerups';
 import { MeteorManager } from './meteors';
+import { UpgradeManager } from './upgrades';
 import { TutorialManager } from './tutorial';
 import { saveGame, clearSave, type SaveState } from './savestate';
 
@@ -85,6 +86,7 @@ export class GameManager {
   particles: ParticleManager | null = null;
   powerUps: PowerUpManager | null = null;
   meteors: MeteorManager | null = null;
+  upgrades = new UpgradeManager();
   tutorial = new TutorialManager();
 
   // Power-up tracking
@@ -267,9 +269,10 @@ export class GameManager {
     this.levelElapsedTime += dt;
     this.totalGameTime += dt;
 
-    // Rotation
-    if (this.rotateLeftInput) l.angularVel -= ROTATION_SPEED * dt;
-    if (this.rotateRightInput) l.angularVel += ROTATION_SPEED * dt;
+    // Rotation (with upgrade multiplier)
+    const rotSpeed = ROTATION_SPEED * this.upgrades.rotationMult;
+    if (this.rotateLeftInput) l.angularVel -= rotSpeed * dt;
+    if (this.rotateRightInput) l.angularVel += rotSpeed * dt;
     l.angularVel *= DRAG;
     l.angle += l.angularVel * dt;
 
@@ -298,13 +301,14 @@ export class GameManager {
     l.thrusting = this.thrustInput && canThrust;
 
     if (l.thrusting) {
-      const thrustX = Math.sin(l.angle) * THRUST_POWER * dt;
-      const thrustY = Math.cos(l.angle) * THRUST_POWER * dt;
+      const thrustPower = THRUST_POWER * this.upgrades.thrustMult;
+      const thrustX = Math.sin(l.angle) * thrustPower * dt;
+      const thrustY = Math.cos(l.angle) * thrustPower * dt;
       l.vx -= thrustX;
       l.vy += thrustY;
 
       if (!modeConfig.infiniteFuel) {
-        l.fuel -= 20 * dt;
+        l.fuel -= 20 * this.upgrades.fuelEfficiency * dt;
         if (l.fuel < 0) l.fuel = 0;
       }
 
@@ -411,9 +415,9 @@ export class GameManager {
       );
 
       const mods = DIFFICULTY_MODS[this.difficulty];
-      const safeVy = SAFE_LAND_VY * mods.safeVyMult;
-      const safeVx = SAFE_LAND_VX;
-      const safeAngle = SAFE_LAND_ANGLE * mods.safeAngleMult;
+      const safeVy = SAFE_LAND_VY * mods.safeVyMult * this.upgrades.crashTolerance;
+      const safeVx = SAFE_LAND_VX * this.upgrades.crashTolerance;
+      const safeAngle = SAFE_LAND_ANGLE * mods.safeAngleMult * this.upgrades.landingAngleMult;
 
       if (
         pad &&

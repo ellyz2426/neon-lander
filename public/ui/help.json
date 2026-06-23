@@ -21,7 +21,7 @@
         "type": "custom",
         "children": [],
         "properties": {
-          "height": "6"
+          "height": "4"
         },
         "dataUid": "uid-3"
       },
@@ -50,7 +50,7 @@
                 "sourceTag": "text",
                 "type": "custom",
                 "children": [
-                  "W / Up Arrow"
+                  "W / Up / Space"
                 ],
                 "properties": {
                   "fontsize": "11",
@@ -185,7 +185,7 @@
         ],
         "properties": {
           "flexdirection": "column",
-          "gap": "4",
+          "gap": "3",
           "width": "260"
         },
         "dataUid": "uid-5"
@@ -195,7 +195,7 @@
         "type": "custom",
         "children": [],
         "properties": {
-          "height": "8"
+          "height": "5"
         },
         "dataUid": "uid-18"
       },
@@ -224,7 +224,7 @@
                 "sourceTag": "text",
                 "type": "custom",
                 "children": [
-                  "Right Trigger"
+                  "Right Trigger / Stick Up"
                 ],
                 "properties": {
                   "fontsize": "11",
@@ -320,46 +320,11 @@
               "justifycontent": "space-between"
             },
             "dataUid": "uid-27"
-          },
-          {
-            "sourceTag": "panel",
-            "type": "custom",
-            "children": [
-              {
-                "sourceTag": "text",
-                "type": "custom",
-                "children": [
-                  "Laser Pointer"
-                ],
-                "properties": {
-                  "fontsize": "11",
-                  "color": "#ffffff"
-                },
-                "dataUid": "uid-31"
-              },
-              {
-                "sourceTag": "text",
-                "type": "custom",
-                "children": [
-                  "Select Menu"
-                ],
-                "properties": {
-                  "fontsize": "11",
-                  "color": "#6688aa"
-                },
-                "dataUid": "uid-32"
-              }
-            ],
-            "properties": {
-              "flexdirection": "row",
-              "justifycontent": "space-between"
-            },
-            "dataUid": "uid-30"
           }
         ],
         "properties": {
           "flexdirection": "column",
-          "gap": "4",
+          "gap": "3",
           "width": "260"
         },
         "dataUid": "uid-20"
@@ -369,9 +334,91 @@
         "type": "custom",
         "children": [],
         "properties": {
-          "height": "8"
+          "height": "5"
         },
-        "dataUid": "uid-33"
+        "dataUid": "uid-30"
+      },
+      {
+        "sourceTag": "text",
+        "type": "custom",
+        "children": [
+          "TIPS"
+        ],
+        "properties": {
+          "fontsize": "13",
+          "color": "#ffcc44",
+          "fontweight": "bold"
+        },
+        "dataUid": "uid-31"
+      },
+      {
+        "sourceTag": "panel",
+        "type": "custom",
+        "children": [
+          {
+            "sourceTag": "text",
+            "type": "custom",
+            "children": [
+              "Collect power-ups for shields, fuel, and more"
+            ],
+            "properties": {
+              "fontsize": "10",
+              "color": "#88aacc"
+            },
+            "dataUid": "uid-33"
+          },
+          {
+            "sourceTag": "text",
+            "type": "custom",
+            "children": [
+              "Watch for meteors from level 4+"
+            ],
+            "properties": {
+              "fontsize": "10",
+              "color": "#88aacc"
+            },
+            "dataUid": "uid-34"
+          },
+          {
+            "sourceTag": "text",
+            "type": "custom",
+            "children": [
+              "Moving pads appear at level 8+"
+            ],
+            "properties": {
+              "fontsize": "10",
+              "color": "#88aacc"
+            },
+            "dataUid": "uid-35"
+          },
+          {
+            "sourceTag": "text",
+            "type": "custom",
+            "children": [
+              "Upgrades carry between games"
+            ],
+            "properties": {
+              "fontsize": "10",
+              "color": "#88aacc"
+            },
+            "dataUid": "uid-36"
+          }
+        ],
+        "properties": {
+          "flexdirection": "column",
+          "gap": "2",
+          "width": "260"
+        },
+        "dataUid": "uid-32"
+      },
+      {
+        "sourceTag": "panel",
+        "type": "custom",
+        "children": [],
+        "properties": {
+          "height": "5"
+        },
+        "dataUid": "uid-37"
       },
       {
         "sourceTag": "panel",
@@ -388,7 +435,7 @@
               "color": "#8888aa",
               "fontweight": "bold"
             },
-            "dataUid": "uid-35"
+            "dataUid": "uid-39"
           }
         ],
         "properties": {
@@ -402,18 +449,18 @@
           "cursor": "pointer",
           "hoverBackgroundcolor": "#333344"
         },
-        "dataUid": "uid-34"
+        "dataUid": "uid-38"
       }
     ],
     "properties": {
       "width": "300",
-      "height": "340",
+      "height": "420",
       "backgroundcolor": "#000a1acc",
       "borderradius": "12",
       "flexdirection": "column",
       "alignitems": "center",
       "padding": "14",
-      "gap": "6"
+      "gap": "5"
     },
     "dataUid": "uid-1"
   },
@@ -425,7 +472,7 @@
         "column": 0
       },
       "end": {
-        "line": 46,
+        "line": 50,
         "column": 8
       }
     },
@@ -486,7 +533,7 @@
       },
       "end": {
         "line": 6,
-        "column": 61
+        "column": 63
       }
     },
     "uid-8": {
@@ -615,7 +662,7 @@
         "column": 2
       },
       "end": {
-        "line": 41,
+        "line": 37,
         "column": 10
       }
     },
@@ -636,7 +683,7 @@
       },
       "end": {
         "line": 26,
-        "column": 62
+        "column": 73
       }
     },
     "uid-23": {
@@ -711,47 +758,27 @@
     },
     "uid-30": {
       "start": {
-        "line": 37,
-        "column": 4
+        "line": 38,
+        "column": 2
       },
       "end": {
-        "line": 40,
-        "column": 12
+        "line": 38,
+        "column": 28
       }
     },
     "uid-31": {
       "start": {
-        "line": 38,
-        "column": 6
+        "line": 39,
+        "column": 2
       },
       "end": {
-        "line": 38,
-        "column": 62
+        "line": 39,
+        "column": 67
       }
     },
     "uid-32": {
       "start": {
-        "line": 39,
-        "column": 6
-      },
-      "end": {
-        "line": 39,
-        "column": 60
-      }
-    },
-    "uid-33": {
-      "start": {
-        "line": 42,
-        "column": 2
-      },
-      "end": {
-        "line": 42,
-        "column": 28
-      }
-    },
-    "uid-34": {
-      "start": {
-        "line": 43,
+        "line": 40,
         "column": 2
       },
       "end": {
@@ -759,13 +786,73 @@
         "column": 10
       }
     },
+    "uid-33": {
+      "start": {
+        "line": 41,
+        "column": 4
+      },
+      "end": {
+        "line": 41,
+        "column": 92
+      }
+    },
+    "uid-34": {
+      "start": {
+        "line": 42,
+        "column": 4
+      },
+      "end": {
+        "line": 42,
+        "column": 78
+      }
+    },
     "uid-35": {
+      "start": {
+        "line": 43,
+        "column": 4
+      },
+      "end": {
+        "line": 43,
+        "column": 77
+      }
+    },
+    "uid-36": {
       "start": {
         "line": 44,
         "column": 4
       },
       "end": {
         "line": 44,
+        "column": 75
+      }
+    },
+    "uid-37": {
+      "start": {
+        "line": 46,
+        "column": 2
+      },
+      "end": {
+        "line": 46,
+        "column": 28
+      }
+    },
+    "uid-38": {
+      "start": {
+        "line": 47,
+        "column": 2
+      },
+      "end": {
+        "line": 49,
+        "column": 10
+      }
+    },
+    "uid-39": {
+      "start": {
+        "line": 48,
+        "column": 4
+      },
+      "end": {
+        "line": 48,
         "column": 69
       }
     }

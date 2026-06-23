@@ -1,10 +1,10 @@
-<panel width="300" height="340" backgroundColor="#000a1acc" borderRadius="12" flexDirection="column" alignItems="center" padding="14" gap="6">
+<panel width="300" height="420" backgroundColor="#000a1acc" borderRadius="12" flexDirection="column" alignItems="center" padding="14" gap="5">
   <text fontSize="18" color="#44aaff" fontWeight="bold">CONTROLS</text>
-  <panel height="6"></panel>
+  <panel height="4"></panel>
   <text fontSize="13" color="#ffcc44" fontWeight="bold">BROWSER</text>
-  <panel flexDirection="column" gap="4" width="260">
+  <panel flexDirection="column" gap="3" width="260">
     <panel flexDirection="row" justifyContent="space-between">
-      <text fontSize="11" color="#ffffff">W / Up Arrow</text>
+      <text fontSize="11" color="#ffffff">W / Up / Space</text>
       <text fontSize="11" color="#6688aa">Thrust</text>
     </panel>
     <panel flexDirection="row" justifyContent="space-between">
@@ -20,11 +20,11 @@
       <text fontSize="11" color="#6688aa">Pause</text>
     </panel>
   </panel>
-  <panel height="8"></panel>
+  <panel height="5"></panel>
   <text fontSize="13" color="#ffcc44" fontWeight="bold">VR (Quest / WebXR)</text>
-  <panel flexDirection="column" gap="4" width="260">
+  <panel flexDirection="column" gap="3" width="260">
     <panel flexDirection="row" justifyContent="space-between">
-      <text fontSize="11" color="#ffffff">Right Trigger</text>
+      <text fontSize="11" color="#ffffff">Right Trigger / Stick Up</text>
       <text fontSize="11" color="#6688aa">Thrust</text>
     </panel>
     <panel flexDirection="row" justifyContent="space-between">
@@ -35,12 +35,16 @@
       <text fontSize="11" color="#ffffff">B / Y Button</text>
       <text fontSize="11" color="#6688aa">Pause</text>
     </panel>
-    <panel flexDirection="row" justifyContent="space-between">
-      <text fontSize="11" color="#ffffff">Laser Pointer</text>
-      <text fontSize="11" color="#6688aa">Select Menu</text>
-    </panel>
   </panel>
-  <panel height="8"></panel>
+  <panel height="5"></panel>
+  <text fontSize="13" color="#ffcc44" fontWeight="bold">TIPS</text>
+  <panel flexDirection="column" gap="2" width="260">
+    <text fontSize="10" color="#88aacc">Collect power-ups for shields, fuel, and more</text>
+    <text fontSize="10" color="#88aacc">Watch for meteors from level 4+</text>
+    <text fontSize="10" color="#88aacc">Moving pads appear at level 8+</text>
+    <text fontSize="10" color="#88aacc">Upgrades carry between games</text>
+  </panel>
+  <panel height="5"></panel>
   <panel id="btn-back" width="200" height="32" backgroundColor="#222233" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#333344">
     <text fontSize="12" color="#8888aa" fontWeight="bold">BACK</text>
   </panel>
