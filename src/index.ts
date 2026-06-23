@@ -22,7 +22,7 @@ import { PowerUpManager } from './powerups';
 import { buildTerrainMesh, buildStarField, generateLevel } from './terrain';
 import { buildLanderMesh, updateLanderSkin } from './lander';
 import { buildNebulaEffect } from './nebula';
-import { buildApproachGuide, buildLandingBeam, buildTerrainGlowEdge, buildBackgroundGrid } from './vfx';
+import { buildApproachGuide, buildLandingBeam, buildTerrainGlowEdge, buildBackgroundGrid, buildParallaxLayers, buildPadBeacon } from './vfx';
 import { loadGame } from './savestate';
 import { MeteorManager } from './meteors';
 import {
@@ -92,6 +92,10 @@ async function main(): Promise<void> {
   const gridGroup = buildBackgroundGrid(game.theme);
   fieldGroup.add(gridGroup);
 
+  // Parallax background layers
+  const parallaxGroup = buildParallaxLayers(game.theme);
+  fieldGroup.add(parallaxGroup);
+
   // Build initial terrain (will be rebuilt on level change)
   let currentTerrainGroup: Group | null = null;
   let currentPadMeshes: any[] = [];
@@ -131,6 +135,8 @@ async function main(): Promise<void> {
       currentGuidesGroup.add(guide);
       const beam = buildLandingBeam(pad.x, pad.y, game.theme);
       currentGuidesGroup.add(beam);
+      const beacon = buildPadBeacon(pad.x, pad.y, game.theme);
+      currentGuidesGroup.add(beacon);
     }
     // Terrain glow edge
     const glowEdge = buildTerrainGlowEdge(game.currentLevel.terrain, game.theme);

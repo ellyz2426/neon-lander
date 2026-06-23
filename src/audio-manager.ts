@@ -356,4 +356,55 @@ export class AudioManager {
     osc.start();
     osc.stop(ctx.currentTime + 0.08);
   }
+
+  private lastFuelWarnTime = 0;
+
+  playFuelWarning(): void {
+    // Urgent double-beep when fuel is low
+    const now = performance.now();
+    if (now - this.lastFuelWarnTime < 1200) return;
+    this.lastFuelWarnTime = now;
+
+    const ctx = this.ensureCtx();
+    for (let i = 0; i < 2; i++) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'square';
+      osc.frequency.value = 1200;
+      const t = ctx.currentTime + i * 0.12;
+      gain.gain.setValueAtTime(0.08, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+      osc.connect(gain);
+      gain.connect(this.masterGain!);
+      osc.start(t);
+      osc.stop(t + 0.08);
+    }
+  }
+
+  playWindWhistle(speed: number): void {
+    // Wind whistle pitch varies with velocity
+    if (speed < 1.5) return;
+    const ctx = this.ensureCtx();
+    const bufferSize = Math.floor(ctx.sampleRate * 0.15);
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    // Band-pass filtered noise approximation
+    const pitchFactor = Math.min(speed / 8, 1);
+    let prev = 0;
+    for (let i = 0; i < bufferSize; i++) {
+      const raw = Math.random() * 2 - 1;
+      const env = Math.sin((i / bufferSize) * Math.PI);
+      // Simple low-pass with variable cutoff
+      prev = prev * (0.6 - pitchFactor * 0.3) + raw * (0.4 + pitchFactor * 0.3);
+      data[i] = prev * env * 0.4;
+    }
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    source.playbackRate.value = 0.5 + pitchFactor * 1.5;
+    const gain = ctx.createGain();
+    gain.gain.value = 0.02 + pitchFactor * 0.03;
+    source.connect(gain);
+    gain.connect(this.masterGain!);
+    source.start();
+  }
 }

@@ -192,6 +192,30 @@ const ACHIEVEMENT_DEFS: { id: string; title: string; description: string; catego
   { id: 'fuel_0_survive', title: 'Coasting', description: 'Glide with 0 fuel for 5+ seconds then land', category: 'Extreme' },
   { id: 'storm_no_hit', title: 'Storm Dancer', description: 'Complete Meteor Storm level with no hits', category: 'Meteors' },
   { id: 'upgrade_all_one', title: 'Dabbler', description: 'Purchase at least 1 of each upgrade type', category: 'Upgrades' },
+  // Fuel mastery achievements
+  { id: 'fuel_warning_land', title: 'Red Zone Lander', description: 'Land after fuel warning triggers (<20%)', category: 'Extreme' },
+  { id: 'fuel_warning_5', title: 'Danger Zone Regular', description: 'Trigger fuel warning 5 times and still land', category: 'Extreme' },
+  { id: 'empty_tank_3', title: 'Fumes Expert', description: 'Land on fumes 3 times total', category: 'Extreme' },
+  // Speed mastery
+  { id: 'speed_demon_5', title: 'Quick Five', description: 'Complete 5 levels in under 2 min total', category: 'Speed' },
+  { id: 'sub_1_landing', title: 'Instant Impact', description: 'Land in under 1 second', category: 'Speed' },
+  // Beacon / visual
+  { id: 'beacon_follower', title: 'Follow the Light', description: 'Land directly below a beacon', category: 'Landing' },
+  { id: 'night_vision', title: 'Night Vision', description: 'Land on 3 different themes', category: 'Customization' },
+  // Endurance
+  { id: 'endless_50', title: 'Infinite Pilot', description: 'Reach level 50 in Endless mode', category: 'Endurance' },
+  { id: 'no_crash_15', title: 'Iron Will', description: 'Land 15 levels without crashing', category: 'Endurance' },
+  { id: 'no_crash_20', title: 'Unbreakable', description: 'Land 20 levels without crashing', category: 'Endurance' },
+  // Career deep
+  { id: 'total_landings_1000', title: 'Legendary Pilot', description: 'Complete 1,000 total landings', category: 'Career' },
+  { id: 'total_score_5m', title: 'Five Million Club', description: 'Accumulate 5,000,000 total score', category: 'Career' },
+  { id: 'games_played_200', title: 'Devotee', description: 'Play 200 games', category: 'Career' },
+  // Meteor mastery
+  { id: 'meteor_dodger_100', title: 'Untouchable Ace', description: 'Narrowly dodge 100 meteors', category: 'Meteors' },
+  { id: 'storm_level_20', title: 'Storm Legend', description: 'Reach level 20 in Meteor Storm', category: 'Modes' },
+  // Challenge
+  { id: 'all_pads_one_level', title: 'Full Sweep', description: 'Land on every pad in one level attempt', category: 'Challenge' },
+  { id: 'win_all_modes', title: 'Completionist', description: 'Win a game in every mode', category: 'Challenge' },
 ];
 
 const STORAGE_KEY = 'neon-lander-achievements';

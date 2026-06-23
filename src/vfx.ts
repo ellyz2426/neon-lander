@@ -108,6 +108,120 @@ export function buildTerrainGlowEdge(
 }
 
 /**
+ * Parallax background layers - floating geometric shapes at different depths
+ * Creates depth illusion with shapes that will animate at different speeds
+ */
+export function buildParallaxLayers(theme: ArenaTheme): Group {
+  const colors = THEME_COLORS[theme];
+  const group = new Group();
+
+  // Layer 1 - Far background (z = -8), large slow shapes
+  const layer1 = new Group();
+  layer1.position.z = -8;
+  const farGeo = new PlaneGeometry(0.5, 0.5);
+  for (let i = 0; i < 8; i++) {
+    const mat = new MeshBasicMaterial({
+      color: colors.accent,
+      transparent: true,
+      opacity: 0.015 + Math.random() * 0.015,
+    });
+    const mesh = new Mesh(farGeo, mat);
+    mesh.position.set(
+      (Math.random() - 0.5) * 20,
+      Math.random() * 10,
+      0,
+    );
+    mesh.rotation.z = Math.random() * Math.PI;
+    mesh.scale.set(0.5 + Math.random() * 1.5, 0.5 + Math.random() * 1.5, 1);
+    layer1.add(mesh);
+  }
+  group.add(layer1);
+
+  // Layer 2 - Mid background (z = -6), medium shapes
+  const layer2 = new Group();
+  layer2.position.z = -6;
+  const midGeo = new SphereGeometry(0.1, 6, 6);
+  for (let i = 0; i < 12; i++) {
+    const mat = new MeshBasicMaterial({
+      color: colors.terrainEmissive,
+      transparent: true,
+      opacity: 0.02 + Math.random() * 0.02,
+    });
+    const mesh = new Mesh(midGeo, mat);
+    mesh.position.set(
+      (Math.random() - 0.5) * 18,
+      Math.random() * 9,
+      0,
+    );
+    mesh.scale.set(1 + Math.random() * 2, 1 + Math.random() * 2, 1);
+    layer2.add(mesh);
+  }
+  group.add(layer2);
+
+  // Layer 3 - Near background (z = -3), small fast diamonds
+  const layer3 = new Group();
+  layer3.position.z = -3;
+  const nearGeo = new PlaneGeometry(0.06, 0.06);
+  for (let i = 0; i < 15; i++) {
+    const mat = new MeshBasicMaterial({
+      color: colors.pad,
+      transparent: true,
+      opacity: 0.02 + Math.random() * 0.03,
+    });
+    const mesh = new Mesh(nearGeo, mat);
+    mesh.position.set(
+      (Math.random() - 0.5) * 16,
+      Math.random() * 8,
+      0,
+    );
+    mesh.rotation.z = Math.PI / 4; // diamond orientation
+    layer3.add(mesh);
+  }
+  group.add(layer3);
+
+  return group;
+}
+
+/**
+ * Pad beacon light - pulsing point light above each landing pad
+ */
+export function buildPadBeacon(padX: number, padY: number, theme: ArenaTheme): Group {
+  const colors = THEME_COLORS[theme];
+  const group = new Group();
+
+  // Beacon light source
+  const beacon = new PointLight(new Color(colors.pad), 0.5, 4);
+  beacon.position.set(padX, padY + 2.5, 0.1);
+  group.add(beacon);
+
+  // Small glowing orb at beacon position
+  const orbGeo = new SphereGeometry(0.03, 6, 6);
+  const orbMat = new MeshBasicMaterial({
+    color: colors.pad,
+    transparent: true,
+    opacity: 0.6,
+  });
+  const orb = new Mesh(orbGeo, orbMat);
+  orb.position.set(padX, padY + 2.5, 0.1);
+  group.add(orb);
+
+  // Vertical dash line from pad to beacon
+  const dashGeo = new PlaneGeometry(0.008, 0.08);
+  const dashMat = new MeshBasicMaterial({
+    color: colors.pad,
+    transparent: true,
+    opacity: 0.12,
+  });
+  for (let h = 0.5; h < 2.5; h += 0.25) {
+    const dash = new Mesh(dashGeo, dashMat);
+    dash.position.set(padX, padY + h, 0.05);
+    group.add(dash);
+  }
+
+  return group;
+}
+
+/**
  * Animated background grid - subtle grid lines in the background
  */
 export function buildBackgroundGrid(theme: ArenaTheme): Group {

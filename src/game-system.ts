@@ -54,6 +54,8 @@ export class GameSystem extends createSystem({}) {
   private shieldShimmerTimer = 0;
   private starTwinklePhase = 0;
 
+  private windWhistleTimer = 0;
+
   setRefs(r: GameSystemRefs): void {
     this.refs = r;
   }
@@ -94,6 +96,19 @@ export class GameSystem extends createSystem({}) {
       // Proximity warning beeps
       const altitude = l.y - game.getTerrainHeight(l.x);
       game.audio.playProximityBeep(altitude);
+
+      // Fuel warning
+      const fuelPct = game.currentLevel ? (l.fuel / game.currentLevel.fuel) : 1;
+      if (fuelPct < 0.2 && fuelPct > 0) {
+        game.audio.playFuelWarning();
+      }
+
+      // Wind whistle at high speed
+      this.windWhistleTimer -= dt;
+      if (this.windWhistleTimer <= 0 && speed > 1.5) {
+        this.windWhistleTimer = 0.3 + Math.random() * 0.2;
+        game.audio.playWindWhistle(speed);
+      }
     }
 
     // Shield shimmer particles
