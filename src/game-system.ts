@@ -5,6 +5,7 @@ import { GameManager } from './game';
 import { GameState, SKIN_COLORS, THEME_COLORS } from './types';
 import { ParticleManager } from './particles';
 import { PowerUpManager } from './powerups';
+import { TrajectoryPredictor } from './trajectory';
 import type { Mesh, Object3D } from '@iwsdk/core';
 
 interface RuntimeInput {
@@ -30,6 +31,7 @@ interface GameSystemRefs {
   padMeshes: Mesh[];
   windIndicator: Object3D | null;
   starField: Object3D | null;
+  trajectory: TrajectoryPredictor | null;
 }
 
 // Camera tracking state
@@ -222,6 +224,18 @@ export class GameSystem extends createSystem({}) {
         windIndicator.scale.x = Math.abs(wind) * 0.8;
         windIndicator.rotation.z = wind > 0 ? 0 : Math.PI;
       }
+    }
+
+    // Trajectory prediction
+    if (this.refs.trajectory) {
+      const l = game.lander;
+      const showTrajectory = game.state === GameState.PLAYING && l.alive;
+      const wind = game.currentLevel?.wind ?? 0;
+      this.refs.trajectory.update(
+        l.x, l.y, l.vx, l.vy,
+        wind, game.difficulty, showTrajectory,
+        (x: number) => game.getTerrainHeight(x),
+      );
     }
   }
 

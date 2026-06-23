@@ -25,6 +25,7 @@ import { buildNebulaEffect } from './nebula';
 import { buildApproachGuide, buildLandingBeam, buildTerrainGlowEdge, buildBackgroundGrid, buildParallaxLayers, buildPadBeacon } from './vfx';
 import { loadGame } from './savestate';
 import { MeteorManager } from './meteors';
+import { TrajectoryPredictor } from './trajectory';
 import {
   FIELD_OFFSET_Y,
   GameState,
@@ -83,6 +84,9 @@ async function main(): Promise<void> {
   // Meteors
   const meteorManager = new MeteorManager(fieldGroup, game.theme);
   game.meteors = meteorManager;
+
+  // Trajectory prediction
+  const trajectory = new TrajectoryPredictor(fieldGroup);
 
   // Nebula background effect
   const nebulaGroup = buildNebulaEffect(game.theme);
@@ -255,13 +259,13 @@ async function main(): Promise<void> {
   world.registerSystem(ParticleSystem);
 
   const gameSystem = world.getSystem(GameSystem)!;
-  gameSystem.setRefs({ game, particles, camera: world.camera, padMeshes: currentPadMeshes, windIndicator, starField });
+  gameSystem.setRefs({ game, particles, camera: world.camera, padMeshes: currentPadMeshes, windIndicator, starField, trajectory });
 
   // Keep padMeshes ref in sync after terrain rebuilds
   const origOnLevelChange = game.onLevelChange;
   game.onLevelChange = () => {
     origOnLevelChange?.();
-    gameSystem.setRefs({ game, particles, camera: world.camera, padMeshes: currentPadMeshes, windIndicator, starField });
+    gameSystem.setRefs({ game, particles, camera: world.camera, padMeshes: currentPadMeshes, windIndicator, starField, trajectory });
   };
 
   const particleSystem = world.getSystem(ParticleSystem)!;

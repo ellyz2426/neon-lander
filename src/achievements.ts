@@ -216,6 +216,16 @@ const ACHIEVEMENT_DEFS: { id: string; title: string; description: string; catego
   // Challenge
   { id: 'all_pads_one_level', title: 'Full Sweep', description: 'Land on every pad in one level attempt', category: 'Challenge' },
   { id: 'win_all_modes', title: 'Completionist', description: 'Win a game in every mode', category: 'Challenge' },
+  // Trajectory/prediction
+  { id: 'prediction_pro', title: 'Prediction Pro', description: 'Land within 0.1m of trajectory end-point', category: 'Precision' },
+  { id: 'wind_master', title: 'Wind Master', description: 'Land perfectly in wind over 1.2', category: 'Challenge' },
+  // Session milestones
+  { id: 'play_10_hours', title: 'Space Addict', description: 'Play for 10 hours total', category: 'Misc' },
+  { id: 'level_50', title: 'Commodore', description: 'Reach level 50', category: 'Progression' },
+  { id: 'level_100', title: 'Grand Admiral', description: 'Reach level 100', category: 'Progression' },
+  // Score extremes
+  { id: 'score_250000', title: 'Transcendent', description: 'Score 250,000 in one game', category: 'Score' },
+  { id: 'combo_20', title: 'Impossiblist', description: 'Land 20 perfect landings in a row', category: 'Score' },
 ];
 
 const STORAGE_KEY = 'neon-lander-achievements';

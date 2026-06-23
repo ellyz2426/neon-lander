@@ -100,6 +100,20 @@ export class ParticleManager {
         maxLife: 0.8,
       });
     }
+
+    // Shockwave ring - expanding ring of particles
+    for (let i = 0; i < 16; i++) {
+      const angle = (i / 16) * Math.PI * 2;
+      const mesh = this.getOrCreate(0xff8800);
+      mesh.position.set(x, y, 0);
+      this.particles.push({
+        mesh,
+        vx: Math.cos(angle) * 5,
+        vy: Math.sin(angle) * 5,
+        life: 0.2,
+        maxLife: 0.2,
+      });
+    }
   }
 
   emitLandingDust(x: number, y: number, color: number = 0xaabb88): void {
