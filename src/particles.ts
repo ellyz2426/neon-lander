@@ -162,6 +162,67 @@ export class ParticleManager {
     });
   }
 
+  emitMeteorDebris(x: number, y: number, count: number = 20): void {
+    // Rocky debris when meteor hits something
+    const colors = [0x886644, 0xff4422, 0xffaa44, 0x664433, 0xff6633];
+    for (let i = 0; i < count; i++) {
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      const angle = Math.random() * Math.PI * 2;
+      const spd = 2 + Math.random() * 4;
+      const mesh = this.getOrCreate(color);
+      mesh.position.set(x, y, 0);
+      this.particles.push({
+        mesh,
+        vx: Math.cos(angle) * spd,
+        vy: Math.sin(angle) * spd,
+        life: 0.3 + Math.random() * 0.5,
+        maxLife: 0.6,
+      });
+    }
+  }
+
+  emitLevelWarp(centerX: number, centerY: number): void {
+    // Inward spiral particles for level transition
+    const colors = [0x0088ff, 0x44ddff, 0x88eeff, 0x00aaff, 0x44aaff];
+    for (let i = 0; i < 40; i++) {
+      const angle = (i / 40) * Math.PI * 4 + Math.random() * 0.5;
+      const r = 3 + Math.random() * 2;
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      const mesh = this.getOrCreate(color);
+      mesh.position.set(
+        centerX + Math.cos(angle) * r,
+        centerY + Math.sin(angle) * r,
+        0,
+      );
+      // Move inward toward center
+      const inwardSpeed = 3 + Math.random() * 2;
+      this.particles.push({
+        mesh,
+        vx: -Math.cos(angle) * inwardSpeed,
+        vy: -Math.sin(angle) * inwardSpeed,
+        life: 0.5 + Math.random() * 0.5,
+        maxLife: 0.8,
+      });
+    }
+  }
+
+  emitStarburst(x: number, y: number, color: number = 0xffcc00): void {
+    // Starburst effect for achievements/milestones
+    for (let i = 0; i < 24; i++) {
+      const angle = (i / 24) * Math.PI * 2;
+      const spd = 1.5 + Math.random() * 1;
+      const mesh = this.getOrCreate(color);
+      mesh.position.set(x, y, 0);
+      this.particles.push({
+        mesh,
+        vx: Math.cos(angle) * spd,
+        vy: Math.sin(angle) * spd,
+        life: 0.4 + Math.random() * 0.3,
+        maxLife: 0.6,
+      });
+    }
+  }
+
   update(dt: number): void {
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const p = this.particles[i];

@@ -278,6 +278,57 @@ export class AudioManager {
     osc2.stop(ctx.currentTime + 0.3);
   }
 
+  playMeteorWhiz(): void {
+    const ctx = this.ensureCtx();
+    // Whooshing meteor flyby sound
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(300, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.3);
+    gain.gain.setValueAtTime(0.06, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+    osc.connect(gain);
+    gain.connect(this.masterGain!);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.35);
+
+    // White noise whoosh
+    const bufferSize = ctx.sampleRate * 0.25;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      const env = Math.sin((i / bufferSize) * Math.PI);
+      data[i] = (Math.random() * 2 - 1) * env * 0.3;
+    }
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+    const nGain = ctx.createGain();
+    nGain.gain.value = 0.04;
+    noise.connect(nGain);
+    nGain.connect(this.masterGain!);
+    noise.start();
+  }
+
+  playLevelWarp(): void {
+    const ctx = this.ensureCtx();
+    // Rising whoosh/warp sound for level transitions
+    const notes = [220, 330, 440, 660, 880];
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.08);
+      gain.gain.linearRampToValueAtTime(0.1, ctx.currentTime + i * 0.08 + 0.04);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.08 + 0.25);
+      osc.connect(gain);
+      gain.connect(this.masterGain!);
+      osc.start(ctx.currentTime + i * 0.08);
+      osc.stop(ctx.currentTime + i * 0.08 + 0.25);
+    });
+  }
+
   private proximityOsc: OscillatorNode | null = null;
   private proximityGain: GainNode | null = null;
   private lastProxBeepTime = 0;

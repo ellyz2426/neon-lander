@@ -113,7 +113,6 @@ const ACHIEVEMENT_DEFS: { id: string; title: string; description: string; catego
   { id: 'flip_5_levels', title: 'Flip Master', description: 'Complete 5 flipped levels', category: 'Modes' },
   { id: 'flip_10_levels', title: 'Gravity Bender', description: 'Complete 10 flipped levels', category: 'Modes' },
   // Multi-pad
-  { id: 'land_all_pads', title: 'Pad Collector', description: 'Land on every pad in a level', category: 'Challenge' },
   { id: 'land_3_pads_game', title: 'Multi-Pad Master', description: 'Land on 3 different pads in one game', category: 'Challenge' },
   // Score milestones
   { id: 'score_100000', title: 'Legendary Score', description: 'Score 100,000 points in one game', category: 'Score' },
@@ -147,6 +146,26 @@ const ACHIEVEMENT_DEFS: { id: string; title: string; description: string; catego
   { id: 'magnet_land', title: 'Guided Landing', description: 'Land while magnet is active', category: 'Power-ups' },
   { id: 'extra_life_collect', title: 'Second Chance', description: 'Collect an extra life', category: 'Power-ups' },
   { id: 'all_powerup_types', title: 'Full Arsenal', description: 'Collect all 6 power-up types', category: 'Power-ups' },
+  // Meteor achievements
+  { id: 'meteor_hit', title: 'Space Rock', description: 'Get hit by a meteor', category: 'Meteors' },
+  { id: 'meteor_dodger_10', title: 'Meteor Dodger', description: 'Narrowly dodge 10 meteors', category: 'Meteors' },
+  { id: 'meteor_dodger_50', title: 'Asteroid Slalom', description: 'Narrowly dodge 50 meteors', category: 'Meteors' },
+  { id: 'land_with_meteors', title: 'Danger Zone', description: 'Land while meteors are falling', category: 'Meteors' },
+  { id: 'meteor_veteran', title: 'Meteor Veteran', description: 'Survive 5 levels with meteors', category: 'Meteors' },
+  { id: 'meteor_ace', title: 'Meteor Ace', description: 'Survive 10 levels with meteors', category: 'Meteors' },
+  { id: 'untouchable', title: 'Ghost Ship', description: 'Clear 3+ meteor levels without getting hit', category: 'Meteors' },
+  { id: 'shield_meteor_block', title: 'Force Field', description: 'Block a meteor with a shield', category: 'Meteors' },
+  // Additional mastery achievements
+  { id: 'triple_narrow', title: 'Triple Needle', description: 'Land on 3x pads three times', category: 'Landing' },
+  { id: 'zero_damage_hard', title: 'Invincible', description: 'Complete 5 Hard levels without crashing', category: 'Difficulty' },
+  { id: 'score_150000', title: 'Mythic Score', description: 'Score 150,000 points in one game', category: 'Score' },
+  { id: 'total_score_1m', title: 'Millionaire', description: 'Accumulate 1,000,000 total score', category: 'Career' },
+  { id: 'landings_500', title: 'Half Thousand', description: 'Complete 500 total landings', category: 'Career' },
+  { id: 'all_easy_hard', title: 'Full Spectrum', description: 'Win on both Easy and Hard', category: 'Difficulty' },
+  { id: 'ten_games_one_session', title: 'Marathon Session', description: 'Play 10 games without closing', category: 'Misc' },
+  { id: 'perfect_daily', title: 'Perfect Day', description: 'Perfect landing on a Daily Challenge', category: 'Modes' },
+  { id: 'endless_30', title: 'Infinity Pilot', description: 'Reach level 30 in Endless mode', category: 'Endurance' },
+  { id: 'flip_perfect', title: 'Flipped Perfection', description: 'Perfect landing in Gravity Flip', category: 'Modes' },
 ];
 
 const STORAGE_KEY = 'neon-lander-achievements';

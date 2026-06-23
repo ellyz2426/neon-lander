@@ -24,6 +24,7 @@ import { buildLanderMesh, updateLanderSkin } from './lander';
 import { buildNebulaEffect } from './nebula';
 import { buildApproachGuide, buildLandingBeam, buildTerrainGlowEdge, buildBackgroundGrid } from './vfx';
 import { loadGame } from './savestate';
+import { MeteorManager } from './meteors';
 import {
   FIELD_OFFSET_Y,
   GameState,
@@ -78,6 +79,10 @@ async function main(): Promise<void> {
   // Power-ups
   const powerUps = new PowerUpManager(fieldGroup);
   game.powerUps = powerUps;
+
+  // Meteors
+  const meteorManager = new MeteorManager(fieldGroup, game.theme);
+  game.meteors = meteorManager;
 
   // Nebula background effect
   const nebulaGroup = buildNebulaEffect(game.theme);
@@ -293,6 +298,9 @@ async function main(): Promise<void> {
     const newNebula = buildNebulaEffect(theme);
     fieldGroup.add(newNebula);
     Object.assign(nebulaGroup, newNebula); // Keep reference for GC
+
+    // Update meteor theme
+    meteorManager.setTheme(theme);
 
     game.statsManager.recordTheme(theme);
   };

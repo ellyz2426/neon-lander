@@ -36,6 +36,7 @@ import { StatsManager } from './stats-manager';
 import { LeaderboardManager } from './leaderboard';
 import { ParticleManager } from './particles';
 import { PowerUpManager, PowerUpType, POWERUP_DEFS } from './powerups';
+import { MeteorManager } from './meteors';
 import { TutorialManager } from './tutorial';
 import { saveGame, clearSave, type SaveState } from './savestate';
 
@@ -83,6 +84,7 @@ export class GameManager {
   leaderboard = new LeaderboardManager();
   particles: ParticleManager | null = null;
   powerUps: PowerUpManager | null = null;
+  meteors: MeteorManager | null = null;
   tutorial = new TutorialManager();
 
   // Power-up tracking
@@ -94,6 +96,11 @@ export class GameManager {
   magnetsUsed = 0;
   extraLivesCollected = 0;
   shieldSavedThisGame = false;
+
+  // Meteor tracking
+  meteorsDodged = 0;
+  meteorHits = 0;
+  levelsWithMeteors = 0;
 
   // Timers
   readyTimer = 0;
@@ -154,6 +161,10 @@ export class GameManager {
     this.gravityFlipped = false;
     this.padsLandedThisLevel = new Set();
     this.powerUps?.resetActive();
+    this.meteors?.clearAll();
+    this.meteorsDodged = 0;
+    this.meteorHits = 0;
+    this.levelsWithMeteors = 0;
 
     this.statsManager.recordGameStart(mode);
     this.statsManager.recordTheme(this.theme);
@@ -221,6 +232,14 @@ export class GameManager {
         level.pads,
         (x: number) => this.getTerrainHeight(x),
       );
+    }
+
+    // Configure meteors: enabled from level 4+ (except Zen mode)
+    if (this.meteors) {
+      const enableMeteors = this.level >= 4 && this.mode !== GameMode.ZEN;
+      this.meteors.configure(this.level, enableMeteors);
+      this.meteors.setTheme(this.theme);
+      if (enableMeteors) this.levelsWithMeteors++;
     }
   }
 
@@ -336,6 +355,28 @@ export class GameManager {
     // Move
     l.x += l.vx * dt;
     l.y += l.vy * dt;
+
+    // Meteor collision check
+    if (this.meteors && this.meteors.enabled) {
+      this.meteors.update(dt);
+      if (this.meteors.checkCollision(l.x, l.y, 0.18)) {
+        this.meteorHits++;
+        this.handleMeteorHit();
+        return;
+      }
+      // Track near-misses as dodged meteors
+      for (const m of this.meteors.meteors) {
+        if (!m.alive) continue;
+        const mdx = l.x - m.x;
+        const mdy = l.y - m.y;
+        const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
+        if (mdist < 0.6 && mdist > 0.2) {
+          this.meteorsDodged++;
+          if (this.meteorsDodged >= 10) this.achievements.unlock('meteor_dodger_10');
+          if (this.meteorsDodged >= 50) this.achievements.unlock('meteor_dodger_50');
+        }
+      }
+    }
 
     // Boundary checks (wrap horizontal)
     const halfW = 6;
@@ -608,6 +649,8 @@ export class GameManager {
     this.levelCompleteTimer = 2.5;
     this.setState(GameState.LEVEL_COMPLETE);
     this.audio.playLevelComplete();
+    this.audio.playLevelWarp();
+    this.particles?.emitLevelWarp(l.x, l.y);
     this.autoSave();
 
     // No-crash streak tracking
@@ -626,6 +669,12 @@ export class GameManager {
     if (this.mode === GameMode.GRAVITY_FLIP) {
       this.gravityFlipped = !this.gravityFlipped;
       this.achievements.unlock('play_gravity_flip');
+      if (perfect) this.achievements.unlock('flip_perfect');
+    }
+
+    // Daily perfect landing
+    if (this.mode === GameMode.DAILY && perfect) {
+      this.achievements.unlock('perfect_daily');
     }
 
     // Slow-mo landing achievement
@@ -647,6 +696,16 @@ export class GameManager {
     // Zero fuel landing
     if (l.fuel <= 0 && !MODE_CONFIGS[this.mode].infiniteFuel) {
       this.achievements.unlock('survive_no_fuel');
+    }
+
+    // Landing with active meteors
+    if (this.meteors?.enabled) {
+      this.achievements.unlock('land_with_meteors');
+      if (this.levelsWithMeteors >= 5) this.achievements.unlock('meteor_veteran');
+      if (this.levelsWithMeteors >= 10) this.achievements.unlock('meteor_ace');
+      if (this.meteorHits === 0 && this.levelsWithMeteors >= 3) {
+        this.achievements.unlock('untouchable');
+      }
     }
 
     // Perfect landing count
@@ -730,6 +789,49 @@ export class GameManager {
     } else {
       this.setState(GameState.CRASHED);
     }
+  }
+
+  private handleMeteorHit(): void {
+    const l = this.lander;
+
+    // Shield can absorb meteor hit too
+    if (this.powerUps?.consumeShield()) {
+      this.audio.playShieldBreak();
+      this.particles?.emitExplosion(l.x, l.y, 25);
+      this.shieldSavedThisGame = true;
+      this.shieldSavesThisGame++;
+      this.achievements.unlock('shield_save');
+      this.achievements.unlock('shield_meteor_block');
+      if (this.shieldSavesThisGame >= 3) this.achievements.unlock('shield_3_saves');
+
+      // Knock lander away from impact
+      l.vy += 1.5;
+      l.vx += (Math.random() - 0.5) * 2;
+      l.angularVel += (Math.random() - 0.5) * 3;
+      return;
+    }
+
+    l.alive = false;
+    l.thrusting = false;
+
+    this.audio.stopThrust();
+    this.audio.playCrash();
+
+    // Big meteor explosion particles
+    this.particles?.emitExplosion(l.x, l.y, 50);
+
+    this.statsManager.recordCrash();
+    this.perfectCombo = 0;
+    this.noCrashStreak = 0;
+
+    this.achievements.unlock('meteor_hit');
+
+    if (this.mode !== GameMode.ZEN) {
+      this.lives--;
+    }
+
+    this.crashTimer = 2.0;
+    this.setState(GameState.CRASHED);
   }
 
   updateTimers(dt: number): void {
