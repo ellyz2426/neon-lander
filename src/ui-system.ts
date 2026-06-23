@@ -570,6 +570,16 @@ export class UISystem extends createSystem({
       setColor('status-indicator', '#ff4444');
     }
 
+    // HUD border pulse when in danger state
+    if (!isCaution && !isSafe && game.state === GameState.PLAYING) {
+      const dangerPulse = Math.sin(Date.now() * 0.006) > 0 ? '#22000040' : '#00112240';
+      const hudRoot = this.hudDoc.rootElement as any;
+      hudRoot?.setProperties({ backgroundColor: dangerPulse });
+    } else {
+      const hudRoot = this.hudDoc.rootElement as any;
+      hudRoot?.setProperties({ backgroundColor: '#00112240' });
+    }
+
     // Power-up status
     const puLabel = game.powerUps?.getActiveLabel() ?? '';
     setText('powerup-status', puLabel);

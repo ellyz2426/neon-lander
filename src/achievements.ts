@@ -226,6 +226,20 @@ const ACHIEVEMENT_DEFS: { id: string; title: string; description: string; catego
   // Score extremes
   { id: 'score_250000', title: 'Transcendent', description: 'Score 250,000 in one game', category: 'Score' },
   { id: 'combo_20', title: 'Impossiblist', description: 'Land 20 perfect landings in a row', category: 'Score' },
+  // Gravity mastery
+  { id: 'flip_land_low_fuel', title: 'Flipped Fumes', description: 'Land in Gravity Flip with <10% fuel', category: 'Extreme' },
+  { id: 'flip_no_crash', title: 'Flip Flawless', description: 'Complete 5 Gravity Flip levels without crashing', category: 'Endurance' },
+  // Difficulty extremes
+  { id: 'hard_no_powerups', title: 'Purist', description: 'Complete Hard without collecting power-ups', category: 'Difficulty' },
+  { id: 'easy_perfect_all', title: 'Easy Perfection', description: 'Perfect land every Easy Classic level', category: 'Difficulty' },
+  // Multi-mode mastery
+  { id: 'play_all_difficulties', title: 'Difficulty Tourist', description: 'Play on all 3 difficulties', category: 'Difficulty' },
+  { id: 'precision_score_5k', title: 'Precision King', description: 'Score 5,000 in Precision mode', category: 'Modes' },
+  { id: 'time_attack_under_30', title: 'Speedster', description: 'Complete Time Attack in under 30 seconds', category: 'Speed' },
+  // Collection milestones
+  { id: 'powerup_100', title: 'Power Hoarder', description: 'Collect 100 power-ups total', category: 'Power-ups' },
+  { id: 'shield_10_saves', title: 'Shield Master', description: 'Block 10 crashes with shields', category: 'Power-ups' },
+  { id: 'magnet_5_lands', title: 'Magnet Pro', description: 'Land 5 times with magnet active', category: 'Power-ups' },
 ];
 
 const STORAGE_KEY = 'neon-lander-achievements';
