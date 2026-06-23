@@ -245,11 +245,42 @@
       {
         "sourceTag": "panel",
         "type": "custom",
+        "children": [
+          {
+            "sourceTag": "text",
+            "type": "custom",
+            "children": [
+              "METEOR STORM - Dodge the Rocks"
+            ],
+            "properties": {
+              "fontsize": "13",
+              "color": "#ff6633",
+              "fontweight": "bold"
+            },
+            "dataUid": "uid-19"
+          }
+        ],
+        "properties": {
+          "id": "btn-mode-meteor_storm",
+          "width": "260",
+          "height": "36",
+          "backgroundcolor": "#330a00",
+          "borderradius": "6",
+          "justifycontent": "center",
+          "alignitems": "center",
+          "cursor": "pointer",
+          "hoverBackgroundcolor": "#441100"
+        },
+        "dataUid": "uid-18"
+      },
+      {
+        "sourceTag": "panel",
+        "type": "custom",
         "children": [],
         "properties": {
           "height": "4"
         },
-        "dataUid": "uid-18"
+        "dataUid": "uid-20"
       },
       {
         "sourceTag": "panel",
@@ -266,7 +297,7 @@
               "color": "#8888aa",
               "fontweight": "bold"
             },
-            "dataUid": "uid-20"
+            "dataUid": "uid-22"
           }
         ],
         "properties": {
@@ -280,7 +311,7 @@
           "cursor": "pointer",
           "hoverBackgroundcolor": "#333344"
         },
-        "dataUid": "uid-19"
+        "dataUid": "uid-21"
       }
     ],
     "properties": {
@@ -303,7 +334,7 @@
         "column": 0
       },
       "end": {
-        "line": 28,
+        "line": 31,
         "column": 8
       }
     },
@@ -473,27 +504,47 @@
         "column": 2
       },
       "end": {
-        "line": 24,
-        "column": 28
+        "line": 26,
+        "column": 10
       }
     },
     "uid-19": {
       "start": {
         "line": 25,
-        "column": 2
+        "column": 4
       },
       "end": {
-        "line": 27,
-        "column": 10
+        "line": 25,
+        "column": 95
       }
     },
     "uid-20": {
       "start": {
-        "line": 26,
+        "line": 27,
+        "column": 2
+      },
+      "end": {
+        "line": 27,
+        "column": 28
+      }
+    },
+    "uid-21": {
+      "start": {
+        "line": 28,
+        "column": 2
+      },
+      "end": {
+        "line": 30,
+        "column": 10
+      }
+    },
+    "uid-22": {
+      "start": {
+        "line": 29,
         "column": 4
       },
       "end": {
-        "line": 26,
+        "line": 29,
         "column": 69
       }
     }

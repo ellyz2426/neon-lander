@@ -116,7 +116,8 @@ export function generateLevel(
 
   // Flatten terrain at pad positions
   const pads: LandingPad[] = [];
-  for (const pp of padPositions) {
+  for (let pi = 0; pi < padPositions.length; pi++) {
+    const pp = padPositions[pi];
     const padLeft = pp.x - pp.width / 2;
     const padRight = pp.x + pp.width / 2;
 
@@ -140,7 +141,19 @@ export function generateLevel(
 
     // Score multiplier: narrower pads = higher multiplier
     const mult = pp.width < 0.5 ? 3 : pp.width < 0.8 ? 2 : 1;
-    pads.push({ x: pp.x, width: pp.width, y: padY, multiplier: mult });
+
+    // Moving pads from level 8+ (not the first pad)
+    const isMoving = pi > 0 && levelNum >= 8 && rng() < 0.4;
+    pads.push({
+      x: pp.x,
+      width: pp.width,
+      y: padY,
+      multiplier: mult,
+      moving: isMoving,
+      moveSpeed: isMoving ? 0.4 + rng() * 0.6 : undefined,
+      moveRange: isMoving ? 0.5 + rng() * 0.8 : undefined,
+      baseX: isMoving ? pp.x : undefined,
+    });
   }
 
   // Wind increases with level

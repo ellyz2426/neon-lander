@@ -177,9 +177,10 @@ export class GameManager {
     if (mode === GameMode.ZEN) this.achievements.unlock('play_zen');
 
     if (mode === GameMode.GRAVITY_FLIP) this.achievements.unlock('play_gravity_flip');
+    if (mode === GameMode.METEOR_STORM) this.achievements.unlock('play_meteor_storm');
 
     // Check if all modes played
-    if (this.statsManager.stats.modesPlayed.length >= 7) {
+    if (this.statsManager.stats.modesPlayed.length >= 8) {
       this.achievements.unlock('all_modes');
     }
 
@@ -234,11 +235,17 @@ export class GameManager {
       );
     }
 
-    // Configure meteors: enabled from level 4+ (except Zen mode)
+    // Configure meteors: enabled from level 4+ (except Zen mode), always in Meteor Storm mode
     if (this.meteors) {
-      const enableMeteors = this.level >= 4 && this.mode !== GameMode.ZEN;
+      const enableMeteors = this.mode === GameMode.METEOR_STORM ||
+        (this.level >= 4 && this.mode !== GameMode.ZEN);
       this.meteors.configure(this.level, enableMeteors);
       this.meteors.setTheme(this.theme);
+      // In Meteor Storm mode, make meteors more aggressive
+      if (this.mode === GameMode.METEOR_STORM && enableMeteors) {
+        this.meteors.spawnInterval = Math.max(0.6, 2.0 - this.level * 0.12);
+        this.meteors.maxMeteors = Math.min(12, 5 + Math.floor(this.level / 2));
+      }
       if (enableMeteors) this.levelsWithMeteors++;
     }
   }
@@ -665,6 +672,15 @@ export class GameManager {
       this.achievements.unlock('land_all_pads');
     }
 
+    // Moving pad achievements
+    const landedPad = this.currentLevel!.pads.find(
+      (p) => l.x >= p.x - p.width / 2 && l.x <= p.x + p.width / 2,
+    );
+    if (landedPad?.moving) {
+      this.achievements.unlock('land_moving_pad');
+      if (landedPad.multiplier >= 3) this.achievements.unlock('land_moving_3x');
+    }
+
     // Gravity flip mode
     if (this.mode === GameMode.GRAVITY_FLIP) {
       this.gravityFlipped = !this.gravityFlipped;
@@ -881,6 +897,12 @@ export class GameManager {
     if (this.mode === GameMode.GRAVITY_FLIP) {
       if (this.level >= 5) this.achievements.unlock('flip_5_levels');
       if (this.level >= 10) this.achievements.unlock('flip_10_levels');
+    }
+
+    // Meteor Storm level achievements
+    if (this.mode === GameMode.METEOR_STORM) {
+      if (this.level >= 5) this.achievements.unlock('storm_level_5');
+      if (this.level >= 10) this.achievements.unlock('storm_level_10');
     }
 
     // Classic completion

@@ -179,10 +179,21 @@ export class GameSystem extends createSystem({}) {
 
     // Pad glow animation
     this.padGlowPhase += dt * 3;
-    for (const padMesh of padMeshes) {
+    for (let idx = 0; idx < padMeshes.length; idx++) {
+      const padMesh = padMeshes[idx];
       const mat = padMesh.material as any;
       if (mat && mat.emissiveIntensity !== undefined) {
         mat.emissiveIntensity = 0.4 + Math.sin(this.padGlowPhase) * 0.3;
+      }
+
+      // Animate moving pads
+      if (game.currentLevel) {
+        const pad = game.currentLevel.pads[idx];
+        if (pad && pad.moving && pad.baseX !== undefined && pad.moveRange && pad.moveSpeed) {
+          const offset = Math.sin(this.padGlowPhase * pad.moveSpeed * 0.33) * pad.moveRange;
+          pad.x = pad.baseX + offset;
+          padMesh.position.x = pad.x;
+        }
       }
     }
 

@@ -58,6 +58,7 @@ export enum GameMode {
   ZEN = 'zen',
   DAILY = 'daily',
   GRAVITY_FLIP = 'gravity_flip',
+  METEOR_STORM = 'meteor_storm',
 }
 
 export enum Difficulty {
@@ -88,6 +89,10 @@ export interface LandingPad {
   width: number;
   y: number; // terrain height at pad
   multiplier: number; // score multiplier (narrower = higher)
+  moving?: boolean; // whether this pad oscillates
+  moveSpeed?: number; // oscillation speed
+  moveRange?: number; // horizontal oscillation range
+  baseX?: number; // original center X for oscillation
 }
 
 export interface TerrainPoint {
@@ -177,6 +182,14 @@ export const MODE_CONFIGS: Record<GameMode, {
   [GameMode.GRAVITY_FLIP]: {
     label: 'Gravity Flip',
     description: 'Gravity reverses each landing',
+    hasLevels: true,
+    infiniteFuel: false,
+    timedMode: false,
+    precisionMode: false,
+  },
+  [GameMode.METEOR_STORM]: {
+    label: 'Meteor Storm',
+    description: 'Dodge constant meteor barrages',
     hasLevels: true,
     infiniteFuel: false,
     timedMode: false,

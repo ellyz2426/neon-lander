@@ -166,6 +166,13 @@ const ACHIEVEMENT_DEFS: { id: string; title: string; description: string; catego
   { id: 'perfect_daily', title: 'Perfect Day', description: 'Perfect landing on a Daily Challenge', category: 'Modes' },
   { id: 'endless_30', title: 'Infinity Pilot', description: 'Reach level 30 in Endless mode', category: 'Endurance' },
   { id: 'flip_perfect', title: 'Flipped Perfection', description: 'Perfect landing in Gravity Flip', category: 'Modes' },
+  // Meteor Storm mode
+  { id: 'play_meteor_storm', title: 'Into the Storm', description: 'Play Meteor Storm mode', category: 'Modes' },
+  { id: 'storm_level_5', title: 'Storm Chaser', description: 'Reach level 5 in Meteor Storm', category: 'Modes' },
+  { id: 'storm_level_10', title: 'Storm King', description: 'Reach level 10 in Meteor Storm', category: 'Modes' },
+  // Moving pad achievements
+  { id: 'land_moving_pad', title: 'Moving Target', description: 'Land on a moving pad', category: 'Challenge' },
+  { id: 'land_moving_3x', title: 'Moving Bullseye', description: 'Land on a moving 3x pad', category: 'Challenge' },
 ];
 
 const STORAGE_KEY = 'neon-lander-achievements';

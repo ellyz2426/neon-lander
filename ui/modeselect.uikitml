@@ -22,6 +22,9 @@
   <panel id="btn-mode-gravity_flip" width="260" height="36" backgroundColor="#110033" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#220044">
     <text fontSize="13" color="#cc88ff" fontWeight="bold">GRAVITY FLIP - Reverse Each Level</text>
   </panel>
+  <panel id="btn-mode-meteor_storm" width="260" height="36" backgroundColor="#330a00" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#441100">
+    <text fontSize="13" color="#ff6633" fontWeight="bold">METEOR STORM - Dodge the Rocks</text>
+  </panel>
   <panel height="4"></panel>
   <panel id="btn-back" width="200" height="32" backgroundColor="#222233" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#333344">
     <text fontSize="12" color="#8888aa" fontWeight="bold">BACK</text>

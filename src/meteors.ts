@@ -37,8 +37,8 @@ export class MeteorManager {
   meteors: Meteor[] = [];
   private parentGroup: Group;
   private spawnTimer = 0;
-  private spawnInterval = 3; // seconds between spawns
-  private maxMeteors = 5;
+  spawnInterval = 3; // seconds between spawns
+  maxMeteors = 5;
   enabled = false;
   theme: ArenaTheme;
 
