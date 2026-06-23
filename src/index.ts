@@ -244,13 +244,13 @@ async function main(): Promise<void> {
   world.registerSystem(ParticleSystem);
 
   const gameSystem = world.getSystem(GameSystem)!;
-  gameSystem.setRefs({ game, particles, camera: world.camera, padMeshes: currentPadMeshes, windIndicator });
+  gameSystem.setRefs({ game, particles, camera: world.camera, padMeshes: currentPadMeshes, windIndicator, starField });
 
   // Keep padMeshes ref in sync after terrain rebuilds
   const origOnLevelChange = game.onLevelChange;
   game.onLevelChange = () => {
     origOnLevelChange?.();
-    gameSystem.setRefs({ game, particles, camera: world.camera, padMeshes: currentPadMeshes, windIndicator });
+    gameSystem.setRefs({ game, particles, camera: world.camera, padMeshes: currentPadMeshes, windIndicator, starField });
   };
 
   const particleSystem = world.getSystem(ParticleSystem)!;

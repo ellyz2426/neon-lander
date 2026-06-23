@@ -1,7 +1,7 @@
-<panel width="280" height="320" backgroundColor="#0a0015cc" borderRadius="12" flexDirection="column" alignItems="center" padding="14" gap="6">
+<panel width="300" height="380" backgroundColor="#0a0015cc" borderRadius="12" flexDirection="column" alignItems="center" padding="14" gap="4">
   <text fontSize="18" color="#44aaff" fontWeight="bold">STATISTICS</text>
-  <panel height="6"></panel>
-  <panel flexDirection="column" gap="5" width="240">
+  <panel height="4"></panel>
+  <panel flexDirection="column" gap="4" width="250">
     <panel flexDirection="row" justifyContent="space-between">
       <text fontSize="11" color="#6688aa">Games Played</text>
       <text id="stat-games" fontSize="11" color="#ffffff" fontWeight="bold">0</text>
@@ -13,6 +13,10 @@
     <panel flexDirection="row" justifyContent="space-between">
       <text fontSize="11" color="#6688aa">Total Crashes</text>
       <text id="stat-crashes" fontSize="11" color="#ffffff" fontWeight="bold">0</text>
+    </panel>
+    <panel flexDirection="row" justifyContent="space-between">
+      <text fontSize="11" color="#6688aa">Landing Rate</text>
+      <text id="stat-rate" fontSize="11" color="#44ff88" fontWeight="bold">-</text>
     </panel>
     <panel flexDirection="row" justifyContent="space-between">
       <text fontSize="11" color="#6688aa">Perfect Landings</text>
@@ -31,12 +35,24 @@
       <text id="stat-best-streak" fontSize="11" color="#44ff88" fontWeight="bold">0</text>
     </panel>
     <panel flexDirection="row" justifyContent="space-between">
+      <text fontSize="11" color="#6688aa">Fastest Landing</text>
+      <text id="stat-fastest" fontSize="11" color="#cc44ff" fontWeight="bold">-</text>
+    </panel>
+    <panel flexDirection="row" justifyContent="space-between">
       <text fontSize="11" color="#6688aa">Total Score</text>
       <text id="stat-total-score" fontSize="11" color="#ffffff" fontWeight="bold">0</text>
     </panel>
+    <panel flexDirection="row" justifyContent="space-between">
+      <text fontSize="11" color="#6688aa">Play Time</text>
+      <text id="stat-playtime" fontSize="11" color="#8888cc" fontWeight="bold">0:00</text>
+    </panel>
+    <panel flexDirection="row" justifyContent="space-between">
+      <text fontSize="11" color="#6688aa">Daily Challenges</text>
+      <text id="stat-daily" fontSize="11" color="#ffcc44" fontWeight="bold">0</text>
+    </panel>
   </panel>
-  <panel height="8"></panel>
-  <panel id="btn-back" width="200" height="32" backgroundColor="#222233" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#333344">
+  <panel height="4"></panel>
+  <panel id="btn-back" width="200" height="30" backgroundColor="#222233" borderRadius="6" justifyContent="center" alignItems="center" cursor="pointer" hover-backgroundColor="#333344">
     <text fontSize="12" color="#8888aa" fontWeight="bold">BACK</text>
   </panel>
 </panel>

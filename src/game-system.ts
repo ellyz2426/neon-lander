@@ -29,6 +29,7 @@ interface GameSystemRefs {
   camera: Object3D;
   padMeshes: Mesh[];
   windIndicator: Object3D | null;
+  starField: Object3D | null;
 }
 
 // Camera tracking state
@@ -36,11 +37,14 @@ const CAM_BASE_Y = 4.5;
 const CAM_BASE_Z = 8;
 const CAM_TRACK_STRENGTH = 0.3;
 const CAM_SMOOTH = 3.0;
+const CAM_ZOOM_START_ALT = 2.5; // Start zooming below this altitude
+const CAM_ZOOM_MAX = 2.0; // Maximum zoom-in distance
 
 export class GameSystem extends createSystem({}) {
   private refs: GameSystemRefs | null = null;
   private camTargetX = 0;
   private camTargetY = CAM_BASE_Y;
+  private camTargetZ = CAM_BASE_Z;
   private padGlowPhase = 0;
   private shakeTimer = 0;
   private shakeIntensity = 0;
@@ -48,6 +52,7 @@ export class GameSystem extends createSystem({}) {
   private trailTimer = 0;
   private windParticleTimer = 0;
   private shieldShimmerTimer = 0;
+  private starTwinklePhase = 0;
 
   setRefs(r: GameSystemRefs): void {
     this.refs = r;
@@ -131,9 +136,19 @@ export class GameSystem extends createSystem({}) {
       const l = game.lander;
       this.camTargetX = l.x * CAM_TRACK_STRENGTH;
       this.camTargetY = CAM_BASE_Y + (l.y - 4) * CAM_TRACK_STRENGTH * 0.5;
+
+      // Dynamic zoom on low altitude approach
+      const altitude = l.y - game.getTerrainHeight(l.x);
+      if (altitude < CAM_ZOOM_START_ALT && altitude > 0) {
+        const zoomFactor = 1 - (altitude / CAM_ZOOM_START_ALT);
+        this.camTargetZ = CAM_BASE_Z - zoomFactor * CAM_ZOOM_MAX;
+      } else {
+        this.camTargetZ = CAM_BASE_Z;
+      }
     } else {
       this.camTargetX = 0;
       this.camTargetY = CAM_BASE_Y;
+      this.camTargetZ = CAM_BASE_Z;
     }
     const smoothFactor = 1 - Math.exp(-CAM_SMOOTH * dt);
     let shakeX = 0;
@@ -146,6 +161,21 @@ export class GameSystem extends createSystem({}) {
     }
     camera.position.x += (this.camTargetX - camera.position.x) * smoothFactor + shakeX;
     camera.position.y += (this.camTargetY - camera.position.y) * smoothFactor + shakeY;
+    camera.position.z += (this.camTargetZ - camera.position.z) * smoothFactor;
+
+    // Star twinkle animation
+    if (this.refs.starField) {
+      this.starTwinklePhase += dt;
+      const children = this.refs.starField.children;
+      for (let i = 0; i < children.length; i++) {
+        const star = children[i] as any;
+        if (star.material && star.material.opacity !== undefined) {
+          const baseOpacity = 0.3 + ((i * 137) % 100) / 100 * 0.5;
+          const twinkle = Math.sin(this.starTwinklePhase * (1.5 + (i % 7) * 0.3) + i * 0.7);
+          star.material.opacity = baseOpacity + twinkle * 0.2;
+        }
+      }
+    }
 
     // Pad glow animation
     this.padGlowPhase += dt * 3;

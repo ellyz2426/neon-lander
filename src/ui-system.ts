@@ -689,11 +689,34 @@ export class UISystem extends createSystem({
     setText('stat-games', `${stats.gamesPlayed}`);
     setText('stat-landings', `${stats.totalLandings}`);
     setText('stat-crashes', `${stats.totalCrashes}`);
+
+    // Landing rate
+    const total = stats.totalLandings + stats.totalCrashes;
+    const rate = total > 0 ? Math.round((stats.totalLandings / total) * 100) : 0;
+    setText('stat-rate', total > 0 ? `${rate}%` : '-');
+
     setText('stat-perfect', `${stats.perfectLandings}`);
     setText('stat-best-score', `${stats.bestScore}`);
     setText('stat-best-level', `${stats.bestLevel}`);
     setText('stat-best-streak', `${stats.bestPerfectStreak}`);
+
+    // Fastest landing
+    const fastest = stats.fastestLanding;
+    setText('stat-fastest', fastest < Infinity ? `${fastest.toFixed(1)}s` : '-');
+
     setText('stat-total-score', `${stats.totalScore}`);
+
+    // Play time
+    const totalSecs = Math.floor(stats.totalPlayTimeMs / 1000);
+    const hours = Math.floor(totalSecs / 3600);
+    const mins = Math.floor((totalSecs % 3600) / 60);
+    if (hours > 0) {
+      setText('stat-playtime', `${hours}h ${mins}m`);
+    } else {
+      setText('stat-playtime', `${mins}m`);
+    }
+
+    setText('stat-daily', `${stats.dailyChallengesCompleted}`);
   }
 
   private updateResumeButton(): void {
