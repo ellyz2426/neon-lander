@@ -527,9 +527,21 @@ export class UISystem extends createSystem({
       const fuelColor = fuelPct > 50 ? '#00ff88' : fuelPct > 20 ? '#ffcc44' : '#ff4444';
       fuelBar.setProperties({ width: w, backgroundColor: fuelColor });
     }
-    // Fuel text color
-    const fuelTextColor = fuelPct > 50 ? '#00ff88' : fuelPct > 20 ? '#ffcc44' : '#ff4444';
+    // Fuel text color with flash effect when critically low
+    let fuelTextColor = fuelPct > 50 ? '#00ff88' : fuelPct > 20 ? '#ffcc44' : '#ff4444';
+    if (fuelPct <= 20 && fuelPct > 0) {
+      // Flash between red and white for urgency
+      const flashPhase = Math.sin(Date.now() * 0.01);
+      fuelTextColor = flashPhase > 0 ? '#ff4444' : '#ffffff';
+    }
     setColor('fuel-value', fuelTextColor);
+
+    // Fuel bar background flash when critically low
+    if (fuelPct <= 15 && fuelPct > 0 && fuelBar) {
+      const bgFlash = Math.sin(Date.now() * 0.008) > 0 ? '#331111' : '#113322';
+      const barBg = this.hudDoc.getElementById('fuel-bar-bg') as UIKit.Text | undefined;
+      barBg?.setProperties({ backgroundColor: bgFlash });
+    }
 
     // Velocity danger colors - green/yellow/red based on safe thresholds
     const vyAbs = Math.abs(l.vy);

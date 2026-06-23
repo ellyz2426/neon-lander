@@ -8,6 +8,7 @@ import {
   PlaneGeometry,
   RingGeometry,
   SphereGeometry,
+  BoxGeometry,
   Color,
   PointLight,
 } from '@iwsdk/core';
@@ -248,6 +249,67 @@ export function buildBackgroundGrid(theme: ArenaTheme): Group {
   for (let x = -8; x <= 8; x += 1) {
     const line = new Mesh(vGeo, lineMat);
     line.position.x = x;
+    group.add(line);
+  }
+
+  return group;
+}
+
+/**
+ * Atmosphere haze - subtle volumetric-like horizontal bands
+ * Creates depth illusion near the terrain surface
+ */
+export function buildAtmosphereHaze(theme: ArenaTheme): Group {
+  const colors = THEME_COLORS[theme];
+  const group = new Group();
+
+  // Low-altitude haze bands
+  const hazeGeo = new PlaneGeometry(16, 0.3);
+  for (let i = 0; i < 5; i++) {
+    const mat = new MeshBasicMaterial({
+      color: colors.accent,
+      transparent: true,
+      opacity: 0.008 + i * 0.003,
+    });
+    const haze = new Mesh(hazeGeo, mat);
+    haze.position.set(0, 0.3 + i * 0.4, -1 - i * 0.5);
+    group.add(haze);
+  }
+
+  // Subtle horizon glow
+  const glowGeo = new PlaneGeometry(20, 0.8);
+  const glowMat = new MeshBasicMaterial({
+    color: colors.terrainEmissive,
+    transparent: true,
+    opacity: 0.01,
+  });
+  const glow = new Mesh(glowGeo, glowMat);
+  glow.position.set(0, 0.1, -2);
+  group.add(glow);
+
+  return group;
+}
+
+/**
+ * Scan line effect - subtle CRT-style horizontal lines overlay
+ * Adds retro-futuristic feel
+ */
+export function buildScanLines(theme: ArenaTheme): Group {
+  const colors = THEME_COLORS[theme];
+  const group = new Group();
+  group.position.z = -0.5;
+
+  const lineGeo = new PlaneGeometry(14, 0.003);
+  const lineMat = new MeshBasicMaterial({
+    color: colors.accent,
+    transparent: true,
+    opacity: 0.01,
+  });
+
+  // Sparse scan lines across play area
+  for (let y = 0; y < 9; y += 0.4) {
+    const line = new Mesh(lineGeo, lineMat);
+    line.position.set(0, y, 0);
     group.add(line);
   }
 

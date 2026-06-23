@@ -22,7 +22,7 @@ import { PowerUpManager } from './powerups';
 import { buildTerrainMesh, buildStarField, generateLevel } from './terrain';
 import { buildLanderMesh, updateLanderSkin } from './lander';
 import { buildNebulaEffect } from './nebula';
-import { buildApproachGuide, buildLandingBeam, buildTerrainGlowEdge, buildBackgroundGrid, buildParallaxLayers, buildPadBeacon } from './vfx';
+import { buildApproachGuide, buildLandingBeam, buildTerrainGlowEdge, buildBackgroundGrid, buildParallaxLayers, buildPadBeacon, buildAtmosphereHaze, buildScanLines } from './vfx';
 import { loadGame } from './savestate';
 import { MeteorManager } from './meteors';
 import { TrajectoryPredictor } from './trajectory';
@@ -99,6 +99,14 @@ async function main(): Promise<void> {
   // Parallax background layers
   const parallaxGroup = buildParallaxLayers(game.theme);
   fieldGroup.add(parallaxGroup);
+
+  // Atmosphere haze near terrain
+  const hazeGroup = buildAtmosphereHaze(game.theme);
+  fieldGroup.add(hazeGroup);
+
+  // Scan lines overlay (retro CRT feel)
+  const scanGroup = buildScanLines(game.theme);
+  fieldGroup.add(scanGroup);
 
   // Build initial terrain (will be rebuilt on level change)
   let currentTerrainGroup: Group | null = null;
@@ -259,13 +267,13 @@ async function main(): Promise<void> {
   world.registerSystem(ParticleSystem);
 
   const gameSystem = world.getSystem(GameSystem)!;
-  gameSystem.setRefs({ game, particles, camera: world.camera, padMeshes: currentPadMeshes, windIndicator, starField, trajectory });
+  gameSystem.setRefs({ game, particles, camera: world.camera, padMeshes: currentPadMeshes, windIndicator, starField, trajectory, parallaxGroup, guidesGroup: currentGuidesGroup });
 
   // Keep padMeshes ref in sync after terrain rebuilds
   const origOnLevelChange = game.onLevelChange;
   game.onLevelChange = () => {
     origOnLevelChange?.();
-    gameSystem.setRefs({ game, particles, camera: world.camera, padMeshes: currentPadMeshes, windIndicator, starField, trajectory });
+    gameSystem.setRefs({ game, particles, camera: world.camera, padMeshes: currentPadMeshes, windIndicator, starField, trajectory, parallaxGroup, guidesGroup: currentGuidesGroup });
   };
 
   const particleSystem = world.getSystem(ParticleSystem)!;

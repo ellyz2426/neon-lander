@@ -32,6 +32,8 @@ interface GameSystemRefs {
   windIndicator: Object3D | null;
   starField: Object3D | null;
   trajectory: TrajectoryPredictor | null;
+  parallaxGroup: Object3D | null;
+  guidesGroup: Object3D | null;
 }
 
 // Camera tracking state
@@ -55,6 +57,7 @@ export class GameSystem extends createSystem({}) {
   private windParticleTimer = 0;
   private shieldShimmerTimer = 0;
   private starTwinklePhase = 0;
+  private beaconPhase = 0;
 
   private windWhistleTimer = 0;
 
@@ -190,6 +193,37 @@ export class GameSystem extends createSystem({}) {
           const baseOpacity = 0.3 + ((i * 137) % 100) / 100 * 0.5;
           const twinkle = Math.sin(this.starTwinklePhase * (1.5 + (i % 7) * 0.3) + i * 0.7);
           star.material.opacity = baseOpacity + twinkle * 0.2;
+        }
+      }
+    }
+
+    // Parallax layer drift based on camera position
+    if (this.refs.parallaxGroup) {
+      const layers = this.refs.parallaxGroup.children;
+      for (let i = 0; i < layers.length; i++) {
+        const speed = 0.02 + i * 0.015; // deeper layers move slower
+        layers[i].position.x = -camera.position.x * speed;
+        layers[i].position.y = -(camera.position.y - CAM_BASE_Y) * speed * 0.5;
+      }
+    }
+
+    // Beacon pulse animation
+    this.beaconPhase += dt * 2;
+    if (this.refs.guidesGroup) {
+      for (const child of this.refs.guidesGroup.children) {
+        // PointLights in beacon groups
+        for (const sub of child.children) {
+          const subAny = sub as any;
+          if (subAny.isPointLight) {
+            subAny.intensity = 0.3 + Math.sin(this.beaconPhase) * 0.3;
+          }
+          // Beacon orb opacity pulse
+          if (subAny.material && subAny.geometry?.type === 'SphereGeometry') {
+            const orbMat = subAny.material as any;
+            if (orbMat.opacity !== undefined && orbMat.opacity > 0.3) {
+              orbMat.opacity = 0.4 + Math.sin(this.beaconPhase) * 0.3;
+            }
+          }
         }
       }
     }
