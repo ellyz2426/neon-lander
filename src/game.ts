@@ -36,6 +36,7 @@ import { StatsManager } from './stats-manager';
 import { LeaderboardManager } from './leaderboard';
 import { ParticleManager } from './particles';
 import { PowerUpManager, PowerUpType, POWERUP_DEFS } from './powerups';
+import { TutorialManager } from './tutorial';
 
 export class GameManager {
   // State
@@ -81,6 +82,7 @@ export class GameManager {
   leaderboard = new LeaderboardManager();
   particles: ParticleManager | null = null;
   powerUps: PowerUpManager | null = null;
+  tutorial = new TutorialManager();
 
   // Power-up tracking
   totalPowerUpsCollected = 0;
@@ -103,6 +105,8 @@ export class GameManager {
   zenLandings = 0;
   gravityFlipped = false;
   padsLandedThisLevel: Set<number> = new Set();
+  hoverTimer = 0;
+  shieldSavesThisGame = 0;
 
   // Callbacks
   onStateChange: ((state: GameState) => void) | null = null;
@@ -141,6 +145,7 @@ export class GameManager {
     this.slowMosUsed = 0;
     this.scoreBoostsUsed = 0;
     this.shieldSavedThisGame = false;
+    this.shieldSavesThisGame = 0;
     this.gravityFlipped = false;
     this.padsLandedThisLevel = new Set();
     this.powerUps?.resetActive();
@@ -163,6 +168,14 @@ export class GameManager {
     }
 
     this.loadLevel();
+
+    // Start tutorial if first time
+    if (this.tutorial.shouldShow() && mode === GameMode.CLASSIC) {
+      this.tutorial.start();
+      this.tutorial.onComplete = () => {
+        this.achievements.unlock('tutorial_complete');
+      };
+    }
   }
 
   loadLevel(): void {
@@ -285,6 +298,14 @@ export class GameManager {
       if (collected) {
         this.handlePowerUpCollect(collected);
       }
+    }
+
+    // Hover tracking
+    if (l.y > 3 && Math.abs(l.vy) < 0.3) {
+      this.hoverTimer += dt;
+      if (this.hoverTimer >= 10) this.achievements.unlock('hover_10s');
+    } else {
+      this.hoverTimer = 0;
     }
 
     // Clamp velocity
@@ -561,6 +582,21 @@ export class GameManager {
       this.achievements.unlock('play_gravity_flip');
     }
 
+    // Slow-mo landing achievement
+    if (this.powerUps?.gravityMultiplier !== undefined && this.powerUps.gravityMultiplier < 1) {
+      this.achievements.unlock('slow_mo_land');
+    }
+
+    // Zero fuel landing
+    if (l.fuel <= 0 && !MODE_CONFIGS[this.mode].infiniteFuel) {
+      this.achievements.unlock('survive_no_fuel');
+    }
+
+    // Perfect landing count
+    if (this.statsManager.stats.perfectLandings >= 10) this.achievements.unlock('perfect_10');
+    if (this.statsManager.stats.perfectLandings >= 25) this.achievements.unlock('perfect_25');
+    if (this.perfectCombo >= 10) this.achievements.unlock('combo_10');
+
     // Zen mode landings
     if (this.mode === GameMode.ZEN) {
       this.zenLandings++;
@@ -583,7 +619,9 @@ export class GameManager {
       this.audio.playShieldBreak();
       this.particles?.emitExplosion(l.x, l.y, 20);
       this.shieldSavedThisGame = true;
+      this.shieldSavesThisGame++;
       this.achievements.unlock('shield_save');
+      if (this.shieldSavesThisGame >= 3) this.achievements.unlock('shield_3_saves');
 
       // Bounce lander up
       l.vy = Math.abs(l.vy) * 0.5 + 0.5;
@@ -613,6 +651,10 @@ export class GameManager {
     if (totalCrashes >= 10) this.achievements.unlock('crash_10');
     if (totalCrashes >= 50) this.achievements.unlock('crash_50');
     if (totalCrashes >= 100) this.achievements.unlock('crash_100');
+    if (totalCrashes >= 200) this.achievements.unlock('crash_200');
+
+    // No-fuel crash
+    if (l.fuel <= 0) this.achievements.unlock('no_fuel_crash');
 
     const speed = Math.sqrt(l.vx * l.vx + l.vy * l.vy);
     if (speed > MAX_VELOCITY * 0.9) this.achievements.unlock('high_speed_crash');
@@ -674,6 +716,7 @@ export class GameManager {
     if (this.level >= 15) this.achievements.unlock('level_15');
     if (this.level >= 20) this.achievements.unlock('level_20');
     if (this.level >= 25) this.achievements.unlock('level_25');
+    if (this.level >= 30) this.achievements.unlock('level_30');
 
     // Gravity flip level achievements
     if (this.mode === GameMode.GRAVITY_FLIP) {
@@ -701,6 +744,8 @@ export class GameManager {
       const dc = this.statsManager.stats.dailyChallengesCompleted;
       if (dc >= 3) this.achievements.unlock('daily_streak_3');
       if (dc >= 7) this.achievements.unlock('daily_streak_7');
+      if (dc >= 14) this.achievements.unlock('daily_14');
+      if (dc >= 30) this.achievements.unlock('daily_30');
       this.endGame();
       return;
     }

@@ -76,6 +76,45 @@ export function buildLanderMesh(skin: LanderSkin): {
   rightFoot.position.set(s * 0.55, -s * 0.55, 0);
   landerGroup.add(rightFoot);
 
+  // Antenna
+  const antennaGeo = new CylinderGeometry(s * 0.015, s * 0.015, s * 0.4, 4);
+  const antennaMat = new MeshStandardMaterial({
+    color: 0xaabbcc,
+    roughness: 0.4,
+    metalness: 0.8,
+  });
+  const antenna = new Mesh(antennaGeo, antennaMat);
+  antenna.position.set(0, s * 0.85, 0);
+  landerGroup.add(antenna);
+
+  // Antenna tip
+  const tipGeo = new SphereGeometry(s * 0.04, 6, 6);
+  const tipMat = new MeshStandardMaterial({
+    color: 0xff4444,
+    emissive: 0xff2222,
+    emissiveIntensity: 0.8,
+  });
+  const tip = new Mesh(tipGeo, tipMat);
+  tip.position.set(0, s * 1.05, 0);
+  landerGroup.add(tip);
+
+  // Side thruster nozzles
+  const nozzleGeo = new CylinderGeometry(s * 0.06, s * 0.04, s * 0.08, 4);
+  const nozzleMat = new MeshStandardMaterial({
+    color: 0x555566,
+    roughness: 0.6,
+    metalness: 0.5,
+  });
+  const leftNozzle = new Mesh(nozzleGeo, nozzleMat);
+  leftNozzle.position.set(-s * 0.5, s * 0.1, 0);
+  leftNozzle.rotation.z = Math.PI / 2;
+  landerGroup.add(leftNozzle);
+
+  const rightNozzle = new Mesh(nozzleGeo, nozzleMat);
+  rightNozzle.position.set(s * 0.5, s * 0.1, 0);
+  rightNozzle.rotation.z = -Math.PI / 2;
+  landerGroup.add(rightNozzle);
+
   // Flame (cone pointing down, hidden by default)
   const flameGeo = new ConeGeometry(s * 0.25, s * 0.6, 6);
   const flameMat = new MeshStandardMaterial({

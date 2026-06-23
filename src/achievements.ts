@@ -124,6 +124,24 @@ const ACHIEVEMENT_DEFS: { id: string; title: string; description: string; catego
   { id: 'weekend_pilot', title: 'Weekend Pilot', description: 'Play on a Saturday or Sunday', category: 'Misc' },
   { id: 'early_bird', title: 'Early Bird', description: 'Play between 5 AM and 7 AM', category: 'Misc' },
   { id: 'speed_run_classic', title: 'Speed Runner', description: 'Complete Classic in under 5 minutes', category: 'Speed' },
+  // Tutorial
+  { id: 'tutorial_complete', title: 'Graduate', description: 'Complete the tutorial', category: 'Misc' },
+  // Lander mastery
+  { id: 'hover_10s', title: 'Hover Master', description: 'Hover at altitude 3+ for 10 seconds', category: 'Extreme' },
+  { id: 'no_fuel_crash', title: 'Empty Tank', description: 'Run out of fuel and crash', category: 'Crashes' },
+  { id: 'survive_no_fuel', title: 'Glider', description: 'Land successfully with 0 fuel', category: 'Extreme' },
+  { id: 'land_all_themes', title: 'Cosmic Explorer', description: 'Land on every theme', category: 'Customization' },
+  { id: 'land_all_skins', title: 'Fashion Pilot', description: 'Land with every skin', category: 'Customization' },
+  { id: 'level_30', title: 'Commander in Chief', description: 'Reach level 30', category: 'Progression' },
+  { id: 'crash_200', title: 'Phoenix', description: 'Crash 200 times', category: 'Crashes' },
+  { id: 'perfect_10', title: 'Perfect Ten', description: 'Land 10 perfect landings total', category: 'Score' },
+  { id: 'perfect_25', title: 'Precision Legend', description: 'Land 25 perfect landings total', category: 'Score' },
+  { id: 'combo_10', title: 'Unstoppable', description: 'Land 10 perfect landings in a row', category: 'Score' },
+  { id: 'daily_14', title: 'Two Week Streak', description: 'Complete 14 daily challenges', category: 'Modes' },
+  { id: 'daily_30', title: 'Monthly Regular', description: 'Complete 30 daily challenges', category: 'Modes' },
+  { id: 'powerup_50', title: 'Power Addict', description: 'Collect 50 power-ups', category: 'Power-ups' },
+  { id: 'shield_3_saves', title: 'Lucky Charm', description: 'Shield saves 3 times in one game', category: 'Power-ups' },
+  { id: 'slow_mo_land', title: 'Bullet Time', description: 'Land while slow-mo is active', category: 'Power-ups' },
 ];
 
 const STORAGE_KEY = 'neon-lander-achievements';

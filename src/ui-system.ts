@@ -64,6 +64,10 @@ export class UISystem extends createSystem({
     required: [PanelUI, PanelDocument],
     where: [eq(PanelUI, 'config', './ui/help.json')],
   },
+  tutorial: {
+    required: [PanelUI, PanelDocument],
+    where: [eq(PanelUI, 'config', './ui/tutorial.json')],
+  },
 }) {
   private game!: GameManager;
 
@@ -79,6 +83,7 @@ export class UISystem extends createSystem({
   private toastEntity: any = null;
   private leaderboardEntity: any = null;
   private helpEntity: any = null;
+  private tutorialEntity: any = null;
 
   // Doc refs
   private hudDoc: UIKitDocument | null = null;
@@ -92,6 +97,7 @@ export class UISystem extends createSystem({
   private toastDoc: UIKitDocument | null = null;
   private leaderboardDoc: UIKitDocument | null = null;
   private helpDoc: UIKitDocument | null = null;
+  private tutorialDoc: UIKitDocument | null = null;
 
   private toastTimer = 0;
   private lastState: GameState | null = null;
@@ -113,6 +119,7 @@ export class UISystem extends createSystem({
     toastEntity: any;
     leaderboardEntity: any;
     helpEntity: any;
+    tutorialEntity: any;
   }): void {
     this.game = refs.game;
     this.hudEntity = refs.hudEntity;
@@ -126,6 +133,7 @@ export class UISystem extends createSystem({
     this.toastEntity = refs.toastEntity;
     this.leaderboardEntity = refs.leaderboardEntity;
     this.helpEntity = refs.helpEntity;
+    this.tutorialEntity = refs.tutorialEntity;
   }
 
   init(): void {
@@ -200,6 +208,11 @@ export class UISystem extends createSystem({
       if (!doc) return;
       this.helpDoc = doc;
       this.wireBack(doc);
+    });
+
+    this.queries.tutorial.subscribe('qualify', (entity) => {
+      const doc = entity.getValue(PanelDocument, 'document') as UIKitDocument | undefined;
+      if (doc) this.tutorialDoc = doc;
     });
   }
 
@@ -607,6 +620,16 @@ export class UISystem extends createSystem({
       (this.game.state === GameState.PLAYING || this.game.state === GameState.READY)) {
       this.hudUpdateTimer = 0.1;
       this.updateHUD();
+    }
+
+    // Tutorial display
+    if (this.game.tutorial.active && this.tutorialDoc && this.tutorialEntity) {
+      this.tutorialEntity.object3D.visible = true;
+      const msg = this.game.tutorial.getCurrentMessage();
+      const el = this.tutorialDoc.getElementById('tutorial-text') as UIKit.Text | undefined;
+      el?.setProperties({ text: msg });
+    } else if (this.tutorialEntity?.object3D) {
+      this.tutorialEntity.object3D.visible = false;
     }
   }
 

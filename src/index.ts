@@ -230,6 +230,13 @@ async function main(): Promise<void> {
   helpEntity.object3D!.visible = false;
   helpEntity.addComponent(PanelUI, { config: './ui/help.json' });
 
+  // Tutorial panel
+  const tutorialEntity = world.createTransformEntity();
+  tutorialEntity.object3D!.position.set(0, panelY + 2.5, panelZ - 1);
+  tutorialEntity.object3D!.rotation.x = -0.15;
+  tutorialEntity.object3D!.visible = false;
+  tutorialEntity.addComponent(PanelUI, { config: './ui/tutorial.json' });
+
   // ---- Register systems ----
   world.registerSystem(GameSystem);
   world.registerSystem(UISystem);
@@ -262,6 +269,7 @@ async function main(): Promise<void> {
     toastEntity,
     leaderboardEntity,
     helpEntity,
+    tutorialEntity,
   });
 
   // Theme change handler

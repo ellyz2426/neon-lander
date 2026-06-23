@@ -63,6 +63,11 @@ export class GameSystem extends createSystem({}) {
     game.updateTimers(dt);
     this.updateLanderVisual(game);
 
+    // Update tutorial
+    if (game.tutorial.active) {
+      game.tutorial.update(dt, game.thrustInput, game.rotateLeftInput || game.rotateRightInput);
+    }
+
     // Thrust particles
     if (game.state === GameState.PLAYING && game.lander.thrusting) {
       const l = game.lander;
