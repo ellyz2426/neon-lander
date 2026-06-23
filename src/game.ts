@@ -591,6 +591,7 @@ export class GameManager {
     if (landingTime < 10) this.achievements.unlock('fast_landing');
     if (landingTime < 5) this.achievements.unlock('land_under_5s');
     if (landingTime < 3) this.achievements.unlock('land_under_3s');
+    if (landingTime < 2) this.achievements.unlock('sub_2_landing');
     if (landingTime > 60) this.achievements.unlock('slow_landing');
     if (fuelPercent > 0.8) this.achievements.unlock('fuel_saver');
     if (fuelPercent < 0.05 && !modeConfig.infiniteFuel) this.achievements.unlock('fumes_landing');
@@ -918,6 +919,8 @@ export class GameManager {
       if (this.difficulty === Difficulty.HARD) this.achievements.unlock('hard_win');
       if (this.noCrashStreak >= 10) this.achievements.unlock('no_crash_classic');
       if (this.totalGameTime < 300) this.achievements.unlock('speed_run_classic');
+      // Confetti celebration!
+      this.particles?.emitConfetti(0, 4, 60);
       this.endGame();
       return;
     }

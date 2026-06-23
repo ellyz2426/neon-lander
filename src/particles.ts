@@ -223,6 +223,25 @@ export class ParticleManager {
     }
   }
 
+  emitConfetti(x: number, y: number, count: number = 50): void {
+    // Colorful confetti burst for game wins
+    const colors = [0xff4444, 0x44ff44, 0x4444ff, 0xffff44, 0xff44ff, 0x44ffff, 0xff8844, 0x88ff44];
+    for (let i = 0; i < count; i++) {
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      const angle = Math.random() * Math.PI * 2;
+      const spd = 1 + Math.random() * 3;
+      const mesh = this.getOrCreate(color);
+      mesh.position.set(x + (Math.random() - 0.5) * 2, y + (Math.random() - 0.5) * 2, 0);
+      this.particles.push({
+        mesh,
+        vx: Math.cos(angle) * spd * 0.5,
+        vy: Math.sin(angle) * spd + 1.5,
+        life: 1.0 + Math.random() * 1.0,
+        maxLife: 1.5,
+      });
+    }
+  }
+
   update(dt: number): void {
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const p = this.particles[i];

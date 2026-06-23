@@ -182,6 +182,16 @@ const ACHIEVEMENT_DEFS: { id: string; title: string; description: string; catego
   { id: 'max_landing_gear', title: 'Soft Touch', description: 'Max out Landing Gear', category: 'Upgrades' },
   { id: 'all_upgrades_max', title: 'Fully Loaded', description: 'Max out all upgrades', category: 'Upgrades' },
   { id: 'spent_10k', title: 'Big Spender', description: 'Spend 10,000 on upgrades', category: 'Upgrades' },
+  // Consecutive session achievements
+  { id: 'back_to_back_win', title: 'Double Feature', description: 'Win two games in a row', category: 'Challenge' },
+  { id: 'land_each_theme', title: 'Universal Lander', description: 'Land on every theme', category: 'Customization' },
+  { id: 'land_each_skin', title: 'Fashionista', description: 'Land with every skin', category: 'Customization' },
+  { id: 'sub_2_landing', title: 'Blink Landing', description: 'Land in under 2 seconds', category: 'Speed' },
+  { id: 'precision_chain_3', title: 'Precision Chain', description: '3 center landings in a row', category: 'Precision' },
+  { id: 'total_games_100', title: 'Centurion Pilot', description: 'Play 100 games', category: 'Career' },
+  { id: 'fuel_0_survive', title: 'Coasting', description: 'Glide with 0 fuel for 5+ seconds then land', category: 'Extreme' },
+  { id: 'storm_no_hit', title: 'Storm Dancer', description: 'Complete Meteor Storm level with no hits', category: 'Meteors' },
+  { id: 'upgrade_all_one', title: 'Dabbler', description: 'Purchase at least 1 of each upgrade type', category: 'Upgrades' },
 ];
 
 const STORAGE_KEY = 'neon-lander-achievements';
